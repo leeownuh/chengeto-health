@@ -1,0 +1,25 @@
+{
+  "name": "chengeto-health-blockchain",
+  "version": "1.0.0",
+  "description": "CHENGETO Health Smart Contracts",
+  "main": "index.js",
+  "scripts": {
+    "compile": "node scripts/compile-local.js",
+    "compile:hardhat": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:local": "node scripts/deploy-local.js",
+    "deploy:hardhat": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "clean": "hardhat clean",
+    "node": "hardhat node"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "hardhat": "^2.19.0",
+    "ethers": "^6.9.0"
+  },
+  "keywords": ["blockchain", "healthcare", "elderly-care"],
+  "author": "Leona Kokerai, Redeem Shaft Manhenga, Sandra Mukwati",
+  "license": "MIT"
+}

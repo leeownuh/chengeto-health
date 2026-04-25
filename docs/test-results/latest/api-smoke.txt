@@ -1,0 +1,8 @@
+﻿== api smoke ==
+GET /health
+{"status":"success","message":"CHENGETO Health API is running","timestamp":"2026-04-24T20:44:43.888Z","uptime":62269.888288619,"environment":"production"}
+
+GET /metrics (first 40 lines)
+{"status":"fail","errorCode":"NOT_FOUND","message":"Route /metrics not found","details":null}
+
+GET /api/v1/patients (unauth should be 401/403)

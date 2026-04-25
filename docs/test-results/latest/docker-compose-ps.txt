@@ -1,0 +1,7 @@
+﻿== docker compose ps ==
+NAME                  IMAGE                         COMMAND                  SERVICE      CREATED          STATUS                  PORTS
+chengeto-backend      node:18-alpine                "docker-entrypoint.s…"   backend      3 weeks ago      Up 33 hours (healthy)   0.0.0.0:1883->1883/tcp, [::]:1883->1883/tcp, 0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp, 0.0.0.0:8083->8083/tcp, [::]:8083->8083/tcp
+chengeto-blockchain   trufflesuite/ganache:latest   "node /app/dist/node…"   blockchain   3 weeks ago      Up 3 days               0.0.0.0:8545->8545/tcp, [::]:8545->8545/tcp
+chengeto-frontend     node:18-alpine                "docker-entrypoint.s…"   frontend     26 minutes ago   Up 26 minutes           0.0.0.0:80->80/tcp, [::]:80->80/tcp
+chengeto-mongodb      mongo:4.4                     "docker-entrypoint.s…"   mongodb      3 weeks ago      Up 3 days (healthy)     0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp
+chengeto-redis        redis:7-alpine                "docker-entrypoint.s…"   redis        3 weeks ago      Up 3 days (healthy)     0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp

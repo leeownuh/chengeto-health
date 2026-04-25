@@ -1,0 +1,23 @@
+{
+  "name": "chengeto-iot-simulator",
+  "description": "IoT Device Simulator for CHENGETO Health",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "elderly": "node src/devices/elderly-device.js",
+    "caregiver": "node src/devices/caregiver-device.js",
+    "simulate-all": "node src/simulate-all.js"
+  },
+  "dependencies": {
+    "mqtt": "^5.3.0",
+    "uuid": "^9.0.1",
+    "dotenv": "^16.3.1",
+    "winston": "^3.11.0",
+    "node-schedule": "^2.1.1"
+  },
+  "keywords": ["iot", "healthcare", "simulation", "mqtt"],
+  "author": "CHENGETO Health Team",
+  "license": "MIT"
+}

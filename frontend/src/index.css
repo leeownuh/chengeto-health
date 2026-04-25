@@ -1,0 +1,183 @@
+/* CHENGETO Health - Global Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8fafc;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Animation classes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Alert severity colors */
+.alert-critical {
+  background-color: #fef2f2 !important;
+  border-left: 4px solid #dc2626;
+}
+
+.alert-high {
+  background-color: #fffbeb !important;
+  border-left: 4px solid #d97706;
+}
+
+.alert-medium {
+  background-color: #eff6ff !important;
+  border-left: 4px solid #2563eb;
+}
+
+.alert-low {
+  background-color: #f0fdf4 !important;
+  border-left: 4px solid #059669;
+}
+
+/* Status indicators */
+.status-active {
+  color: #059669;
+}
+
+.status-inactive {
+  color: #64748b;
+}
+
+.status-critical {
+  color: #dc2626;
+}
+
+/* PWA install prompt styling */
+.install-prompt {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+/* Offline indicator */
+.offline-banner {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background: #d97706;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  z-index: 999;
+  font-size: 14px;
+}
+
+/* Vital signs colors */
+.vital-heart-rate {
+  color: #dc2626;
+}
+
+.vital-oxygen {
+  color: #2563eb;
+}
+
+.vital-temperature {
+  color: #d97706;
+}
+
+.vital-blood-pressure {
+  color: #7c3aed;
+}
+
+/* Chart container */
+.chart-container {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+  
+  .mobile-full-width {
+    width: 100% !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background-color: white;
+  }
+}

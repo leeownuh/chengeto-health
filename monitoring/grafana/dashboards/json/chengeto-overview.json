@@ -1,0 +1,198 @@
+{
+  "dashboard": {
+    "title": "CHENGETO Health Overview",
+    "tags": ["chengeto", "health", "overview"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Total Patients",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+        "targets": [
+          {
+            "expr": "chengeto_patients_total",
+            "legendFormat": "Total Patients"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area"
+        }
+      },
+      {
+        "id": 2,
+        "title": "Active Alerts",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+        "targets": [
+          {
+            "expr": "chengeto_alerts_active",
+            "legendFormat": "Active Alerts"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 5, "color": "yellow" },
+              { "value": 10, "color": "red" }
+            ]
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Check-ins Today",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+        "targets": [
+          {
+            "expr": "chengeto_checkins_today",
+            "legendFormat": "Check-ins"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area"
+        }
+      },
+      {
+        "id": 4,
+        "title": "Active IoT Devices",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+        "targets": [
+          {
+            "expr": "chengeto_iot_devices_active",
+            "legendFormat": "Devices"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area"
+        }
+      },
+      {
+        "id": 5,
+        "title": "API Request Rate",
+        "type": "graph",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+        "targets": [
+          {
+            "expr": "rate(http_requests_total[5m])",
+            "legendFormat": "{{method}} {{path}}"
+          }
+        ],
+        "yaxes": [
+          { "format": "reqps", "show": true },
+          { "format": "short", "show": false }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Response Time",
+        "type": "graph",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "95th percentile"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "50th percentile"
+          }
+        ],
+        "yaxes": [
+          { "format": "s", "show": true },
+          { "format": "short", "show": false }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Alerts by Severity",
+        "type": "piechart",
+        "gridPos": { "h": 6, "w": 6, "x": 0, "y": 12 },
+        "targets": [
+          {
+            "expr": "sum by (severity) (chengeto_alerts_active)",
+            "legendFormat": "{{severity}}"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Check-ins by Verification Method",
+        "type": "piechart",
+        "gridPos": { "h": 6, "w": 6, "x": 6, "y": 12 },
+        "targets": [
+          {
+            "expr": "sum by (method) (chengeto_checkins_by_method_total)",
+            "legendFormat": "{{method}}"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Database Connections",
+        "type": "graph",
+        "gridPos": { "h": 6, "w": 6, "x": 12, "y": 12 },
+        "targets": [
+          {
+            "expr": "mongodb_connections{state='current'}",
+            "legendFormat": "Current Connections"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Memory Usage",
+        "type": "graph",
+        "gridPos": { "h": 6, "w": 6, "x": 18, "y": 12 },
+        "targets": [
+          {
+            "expr": "process_resident_memory_bytes",
+            "legendFormat": "Memory (MB)"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Error Rate",
+        "type": "graph",
+        "gridPos": { "h": 6, "w": 12, "x": 0, "y": 18 },
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\"}[5m])",
+            "legendFormat": "5xx Errors"
+          },
+          {
+            "expr": "rate(http_requests_total{status=~\"4..\"}[5m])",
+            "legendFormat": "4xx Errors"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "MQTT Messages",
+        "type": "graph",
+        "gridPos": { "h": 6, "w": 12, "x": 12, "y": 18 },
+        "targets": [
+          {
+            "expr": "rate(mqtt_messages_received_total[5m])",
+            "legendFormat": "Messages/sec"
+          }
+        ]
+      }
+    ]
+  }
+}

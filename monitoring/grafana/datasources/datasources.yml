@@ -1,0 +1,19 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      timeInterval: "15s"
+      httpMethod: "POST"
+
+  - name: MongoDB
+    type: mongodb
+    access: proxy
+    url: mongodb://admin:chengeto_secure_2024@mongodb:27017
+    database: chengeto_health
+    editable: false

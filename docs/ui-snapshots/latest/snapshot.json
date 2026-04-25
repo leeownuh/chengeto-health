@@ -1,0 +1,1718 @@
+{
+  "startedAt": "2026-04-25T05:22:12.675Z",
+  "baseUrl": "http://127.0.0.1:80",
+  "apiBaseUrl": "http://127.0.0.1:5000/api/v1",
+  "outRoot": "C:\\Projects\\chengeto\\docs\\ui-snapshots\\2026-04-25_105208",
+  "roles": [
+    {
+      "role": "admin",
+      "email": "admin@chengeto.health",
+      "pages": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1/dashboard",
+          "screenshot": "admin__dashboard.png",
+          "state": {
+            "url": "http://127.0.0.1/dashboard",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Admin Dashboard",
+              "3",
+              "2",
+              "0/3",
+              "100%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients",
+          "url": "http://127.0.0.1/patients",
+          "screenshot": "admin__patients.png",
+          "state": {
+            "url": "http://127.0.0.1/patients",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Patients"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/new",
+          "url": "http://127.0.0.1/patients/new",
+          "screenshot": "admin__patients_new.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/new",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Patient"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/checkin",
+          "url": "http://127.0.0.1/checkin",
+          "screenshot": "admin__checkin.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Check-In"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/checkin/history",
+          "url": "http://127.0.0.1/checkin/history",
+          "screenshot": "admin__checkin_history.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin/history",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Check-in History",
+              "0",
+              "12",
+              "48",
+              "82%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/schedule",
+          "url": "http://127.0.0.1/schedule",
+          "screenshot": "admin__schedule.png",
+          "state": {
+            "url": "http://127.0.0.1/schedule",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Schedule Management",
+              "7",
+              "7",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/iot/simulator",
+          "url": "http://127.0.0.1/iot/simulator",
+          "screenshot": "admin__iot_simulator.png",
+          "state": {
+            "url": "http://127.0.0.1/iot/simulator",
+            "title": "CHENGETO Health",
+            "headings": [],
+            "alerts": [
+              "PANIC: Patient - criticalView"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts (after iot)",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "admin__alerts_after_iot.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "18",
+              "0",
+              "1",
+              "21"
+            ],
+            "alerts": [
+              "19 critical alert(s) require immediate attention!View Critical Alerts",
+              "19 critical alert(s) require immediate attention!"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "admin__alerts.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "18",
+              "0",
+              "1",
+              "21"
+            ],
+            "alerts": [
+              "19 critical alert(s) require immediate attention!View Critical Alerts",
+              "19 critical alert(s) require immediate attention!"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/settings",
+          "url": "http://127.0.0.1/settings",
+          "screenshot": "admin__settings.png",
+          "state": {
+            "url": "http://127.0.0.1/settings",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Settings"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/profile",
+          "url": "http://127.0.0.1/profile",
+          "screenshot": "admin__profile.png",
+          "state": {
+            "url": "http://127.0.0.1/profile",
+            "title": "CHENGETO Health",
+            "headings": [
+              "System Administrator",
+              "0",
+              "3",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+          "screenshot": "admin__patients_69ea0a3ecb117a5c9e2a213a.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Rutendo Chiwenga"
+            ],
+            "alerts": [
+              "This patient has 19 active alert(s) that require attention.View Alerts",
+              "This patient has 19 active alert(s) that require attention.View Alerts",
+              "Critical priority because of 19 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions",
+              "Critical priority because of 19 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a/edit",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+          "screenshot": "admin__patients_69ea0a3ecb117a5c9e2a213a_edit.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Edit Patient"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+          "screenshot": "admin__patients_69ea0a3ecb117a5c9e2a213a_vitals.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Vital Signs",
+              "124bpm",
+              "undefined/undefinedmmHg",
+              "37.9°C",
+              "89%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts/69ec4d8acb094daa60faa1d0",
+          "url": "http://127.0.0.1/alerts/69ec4d8acb094daa60faa1d0",
+          "screenshot": "admin__alerts_69ec4d8acb094daa60faa1d0.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts/69ec4d8acb094daa60faa1d0",
+            "title": "CHENGETO Health",
+            "headings": [],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        }
+      ],
+      "offline": [
+        {
+          "route": "/checkin",
+          "url": "http://127.0.0.1/checkin",
+          "screenshot": "admin__offline__checkin.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Check-In"
+            ],
+            "alerts": [
+              "Failed to load patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients",
+          "url": "http://127.0.0.1/patients",
+          "screenshot": "admin__offline__patients.png",
+          "state": {
+            "url": "http://127.0.0.1/patients",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Patients"
+            ],
+            "alerts": [
+              "Offline mode: showing cached patient data. Some filters or actions may be limited until you reconnect.",
+              "Offline mode: showing cached patient data. Some filters or actions may be limited until you reconnect.",
+              "Offline: showing cached patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "admin__offline__alerts.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            "alerts": [
+              "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline: showing cached alerts"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/schedule",
+          "url": "http://127.0.0.1/schedule",
+          "screenshot": "admin__offline__schedule.png",
+          "state": {
+            "url": "http://127.0.0.1/schedule",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Schedule Management",
+              "7",
+              "7",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        }
+      ]
+    },
+    {
+      "role": "caregiver",
+      "email": "caregiver1@example.com",
+      "pages": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1/dashboard",
+          "screenshot": "caregiver__dashboard.png",
+          "state": {
+            "url": "http://127.0.0.1/dashboard",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Good Morning, Tariro",
+              "3",
+              "0",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients",
+          "url": "http://127.0.0.1/patients",
+          "screenshot": "caregiver__patients.png",
+          "state": {
+            "url": "http://127.0.0.1/patients",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Patients"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/new",
+          "url": "http://127.0.0.1/patients/new",
+          "screenshot": "caregiver__patients_new.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/new",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Patient"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/checkin",
+          "url": "http://127.0.0.1/checkin",
+          "screenshot": "caregiver__checkin.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Check-In"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/checkin/history",
+          "url": "http://127.0.0.1/checkin/history",
+          "screenshot": "caregiver__checkin_history.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin/history",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Check-in History",
+              "0",
+              "12",
+              "48",
+              "82%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/schedule",
+          "url": "http://127.0.0.1/schedule",
+          "screenshot": "caregiver__schedule.png",
+          "state": {
+            "url": "http://127.0.0.1/schedule",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Schedule Management",
+              "7",
+              "7",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/iot/simulator",
+          "url": "http://127.0.0.1/iot/simulator",
+          "screenshot": "caregiver__iot_simulator.png",
+          "state": {
+            "url": "http://127.0.0.1/iot/simulator",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Access Denied"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "caregiver__alerts.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "18",
+              "0",
+              "1",
+              "21"
+            ],
+            "alerts": [
+              "19 critical alert(s) require immediate attention!View Critical Alerts",
+              "19 critical alert(s) require immediate attention!"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/settings",
+          "url": "http://127.0.0.1/settings",
+          "screenshot": "caregiver__settings.png",
+          "state": {
+            "url": "http://127.0.0.1/settings",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Settings"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/profile",
+          "url": "http://127.0.0.1/profile",
+          "screenshot": "caregiver__profile.png",
+          "state": {
+            "url": "http://127.0.0.1/profile",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Tariro Moyo",
+              "4",
+              "3",
+              "1",
+              "1.6"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+          "screenshot": "caregiver__patients_69ea0a3ecb117a5c9e2a213a.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Rutendo Chiwenga"
+            ],
+            "alerts": [
+              "This patient has 19 active alert(s) that require attention.View Alerts",
+              "This patient has 19 active alert(s) that require attention.View Alerts",
+              "Critical priority because of 19 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions",
+              "Critical priority because of 19 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a/edit",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+          "screenshot": "caregiver__patients_69ea0a3ecb117a5c9e2a213a_edit.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Edit Patient"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+          "screenshot": "caregiver__patients_69ea0a3ecb117a5c9e2a213a_vitals.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Vital Signs",
+              "124bpm",
+              "undefined/undefinedmmHg",
+              "37.9°C",
+              "89%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts/69ec4ff8cb094daa60faa7f7",
+          "url": "http://127.0.0.1/alerts/69ec4ff8cb094daa60faa7f7",
+          "screenshot": "caregiver__alerts_69ec4ff8cb094daa60faa7f7.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts/69ec4ff8cb094daa60faa7f7",
+            "title": "CHENGETO Health",
+            "headings": [],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        }
+      ],
+      "offline": [
+        {
+          "route": "/checkin",
+          "url": "http://127.0.0.1/checkin",
+          "screenshot": "caregiver__offline__checkin.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Check-In"
+            ],
+            "alerts": [
+              "Failed to load patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients",
+          "url": "http://127.0.0.1/patients",
+          "screenshot": "caregiver__offline__patients.png",
+          "state": {
+            "url": "http://127.0.0.1/patients",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Patients"
+            ],
+            "alerts": [
+              "Offline mode: showing cached patient data. Some filters or actions may be limited until you reconnect.",
+              "Offline mode: showing cached patient data. Some filters or actions may be limited until you reconnect.",
+              "Offline: showing cached patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "caregiver__offline__alerts.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            "alerts": [
+              "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline: showing cached alerts",
+              "Offline: showing cached alerts"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/schedule",
+          "url": "http://127.0.0.1/schedule",
+          "screenshot": "caregiver__offline__schedule.png",
+          "state": {
+            "url": "http://127.0.0.1/schedule",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Schedule Management",
+              "7",
+              "7",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        }
+      ]
+    },
+    {
+      "role": "chw",
+      "email": "chw1@chengeto.health",
+      "pages": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1/dashboard",
+          "screenshot": "chw__dashboard.png",
+          "state": {
+            "url": "http://127.0.0.1/dashboard",
+            "title": "CHENGETO Health",
+            "headings": [
+              "CHW Workflow",
+              "0",
+              "0",
+              "0",
+              "3"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients",
+          "url": "http://127.0.0.1/patients",
+          "screenshot": "chw__patients.png",
+          "state": {
+            "url": "http://127.0.0.1/patients",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Patients"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/new",
+          "url": "http://127.0.0.1/patients/new",
+          "screenshot": "chw__patients_new.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/new",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Patient"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/checkin",
+          "url": "http://127.0.0.1/checkin",
+          "screenshot": "chw__checkin.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Check-In"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/checkin/history",
+          "url": "http://127.0.0.1/checkin/history",
+          "screenshot": "chw__checkin_history.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin/history",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Check-in History",
+              "0",
+              "12",
+              "48",
+              "82%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/schedule",
+          "url": "http://127.0.0.1/schedule",
+          "screenshot": "chw__schedule.png",
+          "state": {
+            "url": "http://127.0.0.1/schedule",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Schedule Management",
+              "7",
+              "7",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/iot/simulator",
+          "url": "http://127.0.0.1/iot/simulator",
+          "screenshot": "chw__iot_simulator.png",
+          "state": {
+            "url": "http://127.0.0.1/iot/simulator",
+            "title": "CHENGETO Health",
+            "headings": [],
+            "alerts": [
+              "PANIC: Patient - criticalView"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts (after iot)",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "chw__alerts_after_iot.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "19",
+              "0",
+              "1",
+              "22"
+            ],
+            "alerts": [
+              "20 critical alert(s) require immediate attention!View Critical Alerts",
+              "20 critical alert(s) require immediate attention!"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "chw__alerts.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "19",
+              "0",
+              "1",
+              "22"
+            ],
+            "alerts": [
+              "20 critical alert(s) require immediate attention!View Critical Alerts",
+              "20 critical alert(s) require immediate attention!"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/settings",
+          "url": "http://127.0.0.1/settings",
+          "screenshot": "chw__settings.png",
+          "state": {
+            "url": "http://127.0.0.1/settings",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Settings"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/profile",
+          "url": "http://127.0.0.1/profile",
+          "screenshot": "chw__profile.png",
+          "state": {
+            "url": "http://127.0.0.1/profile",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Nyasha Mukamuri",
+              "0",
+              "3",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+          "screenshot": "chw__patients_69ea0a3ecb117a5c9e2a213a.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Rutendo Chiwenga"
+            ],
+            "alerts": [
+              "This patient has 20 active alert(s) that require attention.View Alerts",
+              "This patient has 20 active alert(s) that require attention.View Alerts",
+              "Critical priority because of 20 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions",
+              "Critical priority because of 20 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a/edit",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+          "screenshot": "chw__patients_69ea0a3ecb117a5c9e2a213a_edit.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Edit Patient"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+          "screenshot": "chw__patients_69ea0a3ecb117a5c9e2a213a_vitals.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Vital Signs",
+              "124bpm",
+              "undefined/undefinedmmHg",
+              "37.9°C",
+              "89%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts/69ec4ff8cb094daa60faa7f7",
+          "url": "http://127.0.0.1/alerts/69ec4ff8cb094daa60faa7f7",
+          "screenshot": "chw__alerts_69ec4ff8cb094daa60faa7f7.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts/69ec4ff8cb094daa60faa7f7",
+            "title": "CHENGETO Health",
+            "headings": [],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        }
+      ],
+      "offline": [
+        {
+          "route": "/checkin",
+          "url": "http://127.0.0.1/checkin",
+          "screenshot": "chw__offline__checkin.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Check-In"
+            ],
+            "alerts": [
+              "Failed to load patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients",
+          "url": "http://127.0.0.1/patients",
+          "screenshot": "chw__offline__patients.png",
+          "state": {
+            "url": "http://127.0.0.1/patients",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Patients"
+            ],
+            "alerts": [
+              "Offline mode: showing cached patient data. Some filters or actions may be limited until you reconnect.",
+              "Offline mode: showing cached patient data. Some filters or actions may be limited until you reconnect.",
+              "Offline: showing cached patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "chw__offline__alerts.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            "alerts": [
+              "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline: showing cached alerts",
+              "Offline: showing cached alerts"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/schedule",
+          "url": "http://127.0.0.1/schedule",
+          "screenshot": "chw__offline__schedule.png",
+          "state": {
+            "url": "http://127.0.0.1/schedule",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Schedule Management",
+              "7",
+              "7",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        }
+      ]
+    },
+    {
+      "role": "clinician",
+      "email": "clinician1@chengeto.health",
+      "pages": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1/dashboard",
+          "screenshot": "clinician__dashboard.png",
+          "state": {
+            "url": "http://127.0.0.1/dashboard",
+            "title": "CHENGETO Health",
+            "headings": [],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients",
+          "url": "http://127.0.0.1/patients",
+          "screenshot": "clinician__patients.png",
+          "state": {
+            "url": "http://127.0.0.1/patients",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Patients"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/new",
+          "url": "http://127.0.0.1/patients/new",
+          "screenshot": "clinician__patients_new.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/new",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Patient"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/checkin",
+          "url": "http://127.0.0.1/checkin",
+          "screenshot": "clinician__checkin.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Check-In"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/checkin/history",
+          "url": "http://127.0.0.1/checkin/history",
+          "screenshot": "clinician__checkin_history.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin/history",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Check-in History",
+              "0",
+              "12",
+              "48",
+              "82%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/schedule",
+          "url": "http://127.0.0.1/schedule",
+          "screenshot": "clinician__schedule.png",
+          "state": {
+            "url": "http://127.0.0.1/schedule",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Schedule Management",
+              "7",
+              "7",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/iot/simulator",
+          "url": "http://127.0.0.1/iot/simulator",
+          "screenshot": "clinician__iot_simulator.png",
+          "state": {
+            "url": "http://127.0.0.1/iot/simulator",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Access Denied"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "clinician__alerts.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "19",
+              "0",
+              "1",
+              "22"
+            ],
+            "alerts": [
+              "20 critical alert(s) require immediate attention!View Critical Alerts",
+              "20 critical alert(s) require immediate attention!"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/settings",
+          "url": "http://127.0.0.1/settings",
+          "screenshot": "clinician__settings.png",
+          "state": {
+            "url": "http://127.0.0.1/settings",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Settings"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/profile",
+          "url": "http://127.0.0.1/profile",
+          "screenshot": "clinician__profile.png",
+          "state": {
+            "url": "http://127.0.0.1/profile",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Dr. Farai Mlambo",
+              "0",
+              "3",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+          "screenshot": "clinician__patients_69ea0a3ecb117a5c9e2a213a.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Rutendo Chiwenga"
+            ],
+            "alerts": [
+              "This patient has 20 active alert(s) that require attention.View Alerts",
+              "This patient has 20 active alert(s) that require attention.View Alerts",
+              "Critical priority because of 20 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions",
+              "Critical priority because of 20 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a/edit",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+          "screenshot": "clinician__patients_69ea0a3ecb117a5c9e2a213a_edit.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Edit Patient"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+          "screenshot": "clinician__patients_69ea0a3ecb117a5c9e2a213a_vitals.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Vital Signs",
+              "124bpm",
+              "undefined/undefinedmmHg",
+              "37.9°C",
+              "89%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts/69ec5100cb094daa60faabc3",
+          "url": "http://127.0.0.1/alerts/69ec5100cb094daa60faabc3",
+          "screenshot": "clinician__alerts_69ec5100cb094daa60faabc3.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts/69ec5100cb094daa60faabc3",
+            "title": "CHENGETO Health",
+            "headings": [],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        }
+      ],
+      "offline": [
+        {
+          "route": "/checkin",
+          "url": "http://127.0.0.1/checkin",
+          "screenshot": "clinician__offline__checkin.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Check-In"
+            ],
+            "alerts": [
+              "Failed to load patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients",
+          "url": "http://127.0.0.1/patients",
+          "screenshot": "clinician__offline__patients.png",
+          "state": {
+            "url": "http://127.0.0.1/patients",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Patients"
+            ],
+            "alerts": [
+              "Offline mode: showing cached patient data. Some filters or actions may be limited until you reconnect.",
+              "Offline mode: showing cached patient data. Some filters or actions may be limited until you reconnect.",
+              "Offline: showing cached patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "clinician__offline__alerts.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            "alerts": [
+              "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline: showing cached alerts",
+              "Offline: showing cached alerts"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/schedule",
+          "url": "http://127.0.0.1/schedule",
+          "screenshot": "clinician__offline__schedule.png",
+          "state": {
+            "url": "http://127.0.0.1/schedule",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Schedule Management",
+              "7",
+              "7",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        }
+      ]
+    },
+    {
+      "role": "family",
+      "email": "family1@example.com",
+      "pages": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1/dashboard",
+          "screenshot": "family__dashboard.png",
+          "state": {
+            "url": "http://127.0.0.1/dashboard",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Family Dashboard"
+            ],
+            "alerts": [
+              "1 active alert(s) require attention",
+              "1 active alert(s) require attention",
+              "1 medication task(s) due today",
+              "1 medication task(s) due today",
+              "1 medication task(s) due today | 1 refill risk(s)",
+              "1 medication task(s) due today | 1 refill risk(s)",
+              "20 active alert(s) require attention",
+              "20 active alert(s) require attention",
+              "2 medication task(s) due today | 2 refill risk(s)",
+              "2 medication task(s) due today | 2 refill risk(s)"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients",
+          "url": "http://127.0.0.1/patients",
+          "screenshot": "family__patients.png",
+          "state": {
+            "url": "http://127.0.0.1/patients",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Patients"
+            ],
+            "alerts": [
+              "Failed to load patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients/new",
+          "url": "http://127.0.0.1/patients/new",
+          "screenshot": "family__patients_new.png",
+          "state": {
+            "url": "http://127.0.0.1/patients/new",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Patient"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/checkin",
+          "url": "http://127.0.0.1/checkin",
+          "screenshot": "family__checkin.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Check-In"
+            ],
+            "alerts": [
+              "Failed to load patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/checkin/history",
+          "url": "http://127.0.0.1/checkin/history",
+          "screenshot": "family__checkin_history.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin/history",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Check-in History",
+              "0",
+              "12",
+              "48",
+              "82%"
+            ],
+            "alerts": [
+              "Failed to load check-in history"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/schedule",
+          "url": "http://127.0.0.1/schedule",
+          "screenshot": "family__schedule.png",
+          "state": {
+            "url": "http://127.0.0.1/schedule",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Schedule Management",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/iot/simulator",
+          "url": "http://127.0.0.1/iot/simulator",
+          "screenshot": "family__iot_simulator.png",
+          "state": {
+            "url": "http://127.0.0.1/iot/simulator",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Access Denied"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "family__alerts.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/settings",
+          "url": "http://127.0.0.1/settings",
+          "screenshot": "family__settings.png",
+          "state": {
+            "url": "http://127.0.0.1/settings",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Settings"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/profile",
+          "url": "http://127.0.0.1/profile",
+          "screenshot": "family__profile.png",
+          "state": {
+            "url": "http://127.0.0.1/profile",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Kudzai Moyo",
+              "4",
+              "3",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts/69ec5100cb094daa60faabc3",
+          "url": "http://127.0.0.1/alerts/69ec5100cb094daa60faabc3",
+          "screenshot": "family__alerts_69ec5100cb094daa60faabc3.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts/69ec5100cb094daa60faabc3",
+            "title": "CHENGETO Health",
+            "headings": [],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        }
+      ],
+      "offline": [
+        {
+          "route": "/checkin",
+          "url": "http://127.0.0.1/checkin",
+          "screenshot": "family__offline__checkin.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin",
+            "title": "CHENGETO Health",
+            "headings": [
+              "New Check-In"
+            ],
+            "alerts": [
+              "Failed to load patients"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/patients",
+          "url": "http://127.0.0.1/patients",
+          "screenshot": "family__offline__patients.png",
+          "state": {
+            "url": "http://127.0.0.1/patients",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Patients"
+            ],
+            "alerts": [
+              "Offline: no cached patients yet"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts",
+          "url": "http://127.0.0.1/alerts",
+          "screenshot": "family__offline__alerts.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alerts",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            "alerts": [
+              "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline: showing cached alerts",
+              "Offline: showing cached alerts"
+            ],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/schedule",
+          "url": "http://127.0.0.1/schedule",
+          "screenshot": "family__offline__schedule.png",
+          "state": {
+            "url": "http://127.0.0.1/schedule",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Schedule Management",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        }
+      ]
+    }
+  ],
+  "public": [
+    {
+      "route": "/login",
+      "url": "http://127.0.0.1/login",
+      "screenshot": "public__login.png",
+      "state": {
+        "url": "http://127.0.0.1/login",
+        "title": "CHENGETO Health",
+        "headings": [
+          "CHENGETO Health"
+        ],
+        "alerts": [],
+        "offlineBanner": "",
+        "theme": "light"
+      }
+    },
+    {
+      "route": "/register",
+      "url": "http://127.0.0.1/register",
+      "screenshot": "public__register.png",
+      "state": {
+        "url": "http://127.0.0.1/register",
+        "title": "CHENGETO Health",
+        "headings": [
+          "CHENGETO Health",
+          "Create Account"
+        ],
+        "alerts": [],
+        "offlineBanner": "",
+        "theme": "light"
+      }
+    },
+    {
+      "route": "/forgot-password",
+      "url": "http://127.0.0.1/forgot-password",
+      "screenshot": "public__forgot-password.png",
+      "state": {
+        "url": "http://127.0.0.1/forgot-password",
+        "title": "CHENGETO Health",
+        "headings": [
+          "CHENGETO Health",
+          "Forgot Password?"
+        ],
+        "alerts": [],
+        "offlineBanner": "",
+        "theme": "light"
+      }
+    },
+    {
+      "route": "/reset-password/demo-token",
+      "url": "http://127.0.0.1/reset-password/demo-token",
+      "screenshot": "public__reset-password_demo-token.png",
+      "state": {
+        "url": "http://127.0.0.1/reset-password/demo-token",
+        "title": "CHENGETO Health",
+        "headings": [
+          "CHENGETO Health"
+        ],
+        "alerts": [],
+        "offlineBanner": "",
+        "theme": "light"
+      }
+    },
+    {
+      "route": "/mfa-setup",
+      "url": "http://127.0.0.1/mfa-setup",
+      "screenshot": "public__mfa-setup.png",
+      "state": {
+        "url": "http://127.0.0.1/mfa-setup",
+        "title": "CHENGETO Health",
+        "headings": [
+          "CHENGETO Health",
+          "Two-Factor Authentication"
+        ],
+        "alerts": [
+          "Failed to generate QR code. Please refresh.",
+          "Failed to generate QR code. Please refresh."
+        ],
+        "offlineBanner": "",
+        "theme": "light"
+      }
+    }
+  ],
+  "finishedAt": "2026-04-25T05:32:51.310Z"
+}

@@ -1,0 +1,22 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --omit=dev --legacy-peer-deps
+
+# Copy IoT simulator code
+COPY src/simulators ./simulators
+COPY src/config ./config
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+USER nodejs
+
+# Start IoT simulator
+CMD ["node", "simulators/main.js"]

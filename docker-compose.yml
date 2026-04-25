@@ -1,0 +1,273 @@
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:4.4
+    container_name: chengeto-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-chengeto_secure_2024}
+      MONGO_INITDB_DATABASE: chengeto_health
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - chengeto-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo 127.0.0.1:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: chengeto-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-chengeto_redis_2024}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - chengeto-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-chengeto_redis_2024}", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Backend API Service
+  backend:
+    image: node:18-alpine
+    container_name: chengeto-backend
+    restart: "no"
+    working_dir: /app
+    command: >
+      sh -lc "if [ ! -d node_modules/express ]; then npm install --omit=dev --legacy-peer-deps --no-audit --no-fund --install-strategy=nested; fi &&
+      node src/server.js"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://admin:${MONGO_PASSWORD:-chengeto_secure_2024}@mongodb:27017/chengeto_health?authSource=admin
+      REDIS_URL: redis://:${REDIS_PASSWORD:-chengeto_redis_2024}@redis:6379
+      JWT_SECRET: ${JWT_SECRET:-chengeto_jwt_secret_key_2024_super_secure}
+      JWT_EXPIRE: 7d
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:-chengeto_refresh_token_secret_2024}
+      REFRESH_TOKEN_EXPIRE: 30d
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-chengeto_encryption_key_32_chars!}
+      MQTT_PORT: 1883
+      MQTT_WS_PORT: 8083
+      BLOCKCHAIN_RPC_URL: ${BLOCKCHAIN_RPC_URL:-http://blockchain:8545}
+      BLOCKCHAIN_PRIVATE_KEY: ${BLOCKCHAIN_PRIVATE_KEY:-0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d}
+      CONTRACT_ADDRESS: ${CONTRACT_ADDRESS:-}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER:-}
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      # Do NOT use '*' in production with credentials. Use a comma-separated allowlist.
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost,http://127.0.0.1,http://localhost:80,http://127.0.0.1:80}
+      RATE_LIMIT_WINDOW_MS: 900000
+      RATE_LIMIT_MAX: 100
+    ports:
+      - "5000:5000"
+      - "1883:1883"
+      - "8083:8083"
+    volumes:
+      - ./backend:/app
+      - backend_node_modules_v2:/app/node_modules
+    networks:
+      - chengeto-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Frontend PWA Service
+  frontend:
+    image: node:18-alpine
+    container_name: chengeto-frontend
+    restart: "no"
+    working_dir: /app
+    command: >
+      sh -lc "if [ ! -x node_modules/.bin/vite ]; then npm install --legacy-peer-deps --no-audit --no-fund; fi &&
+      npm run dev -- --host 0.0.0.0 --port 80"
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:5000/api/v1}
+      VITE_SOCKET_URL: ${VITE_SOCKET_URL:-http://localhost:5000}
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    networks:
+      - chengeto-network
+
+  # Frontend (Production build + preview) for PWA/service-worker verification.
+  # Start with: docker compose --profile pwa up -d frontend-prod
+  frontend-prod:
+    image: node:18-alpine
+    container_name: chengeto-frontend-prod
+    restart: "no"
+    working_dir: /app
+    command: >
+      sh -lc "if [ ! -x node_modules/.bin/vite ]; then npm install --legacy-peer-deps --no-audit --no-fund; fi &&
+      npm run build &&
+      npm run preview -- --host 0.0.0.0 --port 80"
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:5000/api/v1}
+      VITE_SOCKET_URL: ${VITE_SOCKET_URL:-http://localhost:5000}
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    networks:
+      - chengeto-network
+    profiles:
+      - pwa
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Blockchain Node (Ganache for development, can be replaced with real node)
+  blockchain:
+    image: trufflesuite/ganache:latest
+    container_name: chengeto-blockchain
+    restart: unless-stopped
+    ports:
+      - "8545:8545"
+    volumes:
+      - blockchain_data:/ganache_data
+    networks:
+      - chengeto-network
+    command: >
+      --wallet.deterministic
+      --wallet.totalAccounts 10
+      --server.host 0.0.0.0
+      --server.port 8545
+      --database.dbPath /ganache_data
+
+  # IoT Simulator (optional, for testing)
+  iot-simulator:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.iot
+    container_name: chengeto-iot-simulator
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+    environment:
+      MQTT_BROKER: mqtt://backend:1883
+      SIMULATION_INTERVAL: 5000
+      NUM_DEVICES: 10
+    networks:
+      - chengeto-network
+    profiles:
+      - simulation
+
+  # Prometheus for monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: chengeto-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - chengeto-network
+    profiles:
+      - monitoring
+
+  # Host metrics (optional)
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: chengeto-node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    networks:
+      - chengeto-network
+    profiles:
+      - monitoring
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: chengeto-grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - chengeto-network
+    profiles:
+      - monitoring
+
+networks:
+  chengeto-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+  redis_data:
+    driver: local
+  blockchain_data:
+    driver: local
+  backend_node_modules:
+    driver: local
+  backend_node_modules_v2:
+    driver: local
+  frontend_node_modules:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local

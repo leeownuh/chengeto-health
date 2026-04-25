@@ -1,0 +1,25 @@
+groups:
+  - name: chengeto.rules
+    rules:
+      - alert: ChengetoBackendDown
+        expr: up{job="chengeto-backend"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CHENGETO backend is down"
+          description: "Prometheus cannot scrape the backend /metrics endpoint."
+
+      - alert: ChengetoHigh5xxRate
+        expr: |
+          sum(rate(http_requests_total{status_code=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+          > 0.05
+        for: 5m
+        labels:
+          severity: high
+        annotations:
+          summary: "High 5xx rate"
+          description: "More than 5% of requests are 5xx over 5 minutes."
+

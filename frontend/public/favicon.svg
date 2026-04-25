@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="CHENGETO">
+  <rect width="128" height="128" rx="28" fill="#2563eb" />
+  <path d="M64 22c12 0 22 10 22 22 0 15-22 38-22 38S42 59 42 44c0-12 10-22 22-22z" fill="#ffffff" />
+  <path d="M64 34v20M54 44h20" stroke="#2563eb" stroke-width="8" stroke-linecap="round" />
+  <path d="M30 94h68" stroke="#93c5fd" stroke-width="10" stroke-linecap="round" />
+</svg>
