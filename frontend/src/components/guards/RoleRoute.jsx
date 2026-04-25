@@ -34,7 +34,7 @@ const RoleRoute = ({ roles }) => {
         Access Denied
       </Typography>
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-        You don't have permission to access this page. Please contact your administrator
+        You don&apos;t have permission to access this page. Please contact your administrator
         if you believe this is an error.
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>

@@ -418,7 +418,7 @@ const FamilyDashboard = () => {
               No Family Members Added
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              You haven't been granted access to any family members yet.
+              You haven&apos;t been granted access to any family members yet.
               Contact your care provider to get connected.
             </Typography>
             <Button variant="contained" startIcon={<Add />} onClick={handleRequestAccess}>

@@ -205,7 +205,7 @@ const MFASetupPage = () => {
               onClick={() => setActiveStep(1)}
               disabled={!setupData.secret}
             >
-              I've Added the Account
+              I&apos;ve Added the Account
             </Button>
           </Box>
         );

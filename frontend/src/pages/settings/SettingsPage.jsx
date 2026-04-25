@@ -235,7 +235,7 @@ const TwoFactorDialog = ({ open, onClose, enabled, onToggle }) => {
                   Two-factor authentication adds an extra layer of security to your account.
                 </Alert>
                 <Typography variant="body2" gutterBottom>
-                  To set up 2FA, you'll need an authenticator app like:
+                  To set up 2FA, you&apos;ll need an authenticator app like:
                 </Typography>
                 <List dense>
                   <ListItem>

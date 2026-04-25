@@ -191,7 +191,7 @@ const LoginPage = () => {
 
         <Box sx={{ textAlign: 'center' }}>
           <Typography variant="body2" color="text.secondary">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link to="/register" style={{ textDecoration: 'none' }}>
               <Typography component="span" variant="body2" color="primary" sx={{ fontWeight: 600 }}>
                 Sign Up

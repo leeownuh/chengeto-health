@@ -314,7 +314,12 @@ const AlertsPage = () => {
 
   const handleBulkResolve = async () => {
     try {
-      await axios.post('/api/alerts/bulk-resolve', { alertIds: selected });
+      if (!isOnline) {
+        enqueueSnackbar('Offline: resolving alerts is unavailable', { variant: 'warning' });
+        return;
+      }
+
+      await api.post('/alerts/bulk-resolve', { alertIds: selected });
       setAlerts(prev =>
         prev.map(a =>
           selected.includes(a._id)

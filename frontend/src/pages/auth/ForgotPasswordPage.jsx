@@ -69,11 +69,11 @@ const ForgotPasswordPage = () => {
           Check Your Email
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          We've sent password reset instructions to <strong>{email}</strong>. Please check
+          We&apos;ve sent password reset instructions to <strong>{email}</strong>. Please check
           your inbox and follow the link to reset your password.
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Didn't receive the email? Check your spam folder or{' '}
+          Didn&apos;t receive the email? Check your spam folder or{' '}
           <Link
             component="button"
             onClick={() => setSubmitted(false)}
@@ -95,7 +95,7 @@ const ForgotPasswordPage = () => {
         Forgot Password?
       </Typography>
       <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
-        Enter your email address and we'll send you instructions to reset your password.
+        Enter your email address and we&apos;ll send you instructions to reset your password.
       </Typography>
 
       {error && (

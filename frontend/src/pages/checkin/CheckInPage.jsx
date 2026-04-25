@@ -708,7 +708,7 @@ const CheckInPage = () => {
               Record Vital Signs
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Enter the patient's vital signs. Leave blank if not measured.
+              Enter the patient&apos;s vital signs. Leave blank if not measured.
             </Typography>
 
             {selectedPatient?.ncdConditions?.length > 0 && (

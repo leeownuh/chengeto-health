@@ -117,7 +117,6 @@ const DeviceSimulatorPage = () => {
 
   useEffect(() => {
     loadDevices();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const connectMqtt = () => {
@@ -320,7 +319,6 @@ const DeviceSimulatorPage = () => {
       stopStreaming();
       disconnectMqtt();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
