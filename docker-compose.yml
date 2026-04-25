@@ -23,6 +23,34 @@ services:
       retries: 5
       start_period: 40s
 
+  # MongoDB Web UI (optional, for evidence screenshots)
+  mongo-express:
+    image: mongo-express:latest
+    container_name: chengeto-mongo-express
+    restart: "no"
+    depends_on:
+      mongodb:
+        condition: service_started
+    environment:
+      # Use explicit URL (required by newer mongo-express images)
+      ME_CONFIG_MONGODB_URL: mongodb://admin:${MONGO_PASSWORD:-chengeto_secure_2024}@mongodb:27017/chengeto_health?authSource=admin
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+      # Basic auth for the UI (demo defaults; change for real deployments)
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD:-chengeto_admin}
+    ports:
+      - "8081:8081"
+    networks:
+      - chengeto-network
+    profiles:
+      - dbui
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:8081/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
   # Redis for caching and sessions
   redis:
     image: redis:7-alpine

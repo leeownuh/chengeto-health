@@ -53,3 +53,12 @@ The snapshot script logs in using the seeded demo accounts from `backend/scripts
 Password:
 
 - `Demo@123456` (or `DEMO_PASSWORD` if set)
+
+## MongoDB screenshots (optional)
+
+If you need evidence of MongoDB collections/documents (for the report), enable the DB UI and capture screenshots:
+
+- Start mongo-express:
+  - `docker compose --profile dbui up -d mongo-express`
+- Capture MongoDB screenshots (saved into `docs/ui-snapshots/latest/`):
+  - `node frontend/scripts/capture-mongodb-snapshots.mjs --dbUrl http://127.0.0.1:8081 --user admin --pass chengeto_admin --db chengeto_health`
