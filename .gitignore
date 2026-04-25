@@ -54,3 +54,4 @@ docs/ui-snapshots/**
 docs/test-results/**
 !docs/test-results/latest/
 !docs/test-results/latest/**
+docs/test-results/latest/zap-full/*.txt
