@@ -500,6 +500,7 @@ export function legacyAlertTypesToDb(typeValues = []) {
 
 export function mapAlertLegacy(alert) {
   const lastAcknowledgement = alert.acknowledgements?.[alert.acknowledgements.length - 1];
+  const blockchain = alert.blockchainRecord || null;
 
   return {
     _id: alert._id,
@@ -523,6 +524,14 @@ export function mapAlertLegacy(alert) {
     resolvedBy: alert.resolution?.resolvedBy ? summarizeUser(alert.resolution.resolvedBy) : null,
     location: alert.location ?? null,
     vitalSnapshot: alert.vitalSnapshot ?? null,
+    blockchainRecord: blockchain
+      ? {
+          transactionHash: blockchain.transactionHash,
+          blockNumber: blockchain.blockNumber,
+          timestamp: blockchain.recordedAt || blockchain.timestamp || null,
+          dataHash: blockchain.dataHash || null
+        }
+      : null,
     notesCount: alert.auditLog?.filter((entry) => entry.action === 'note_added').length ?? 0
   };
 }

@@ -8,7 +8,7 @@ import { body, param, query, validationResult } from 'express-validator';
 import Alert from '../models/Alert.js';
 import Patient from '../models/Patient.js';
 import User from '../models/User.js';
-import AuditLog from '../models/AuditLog.js';
+import AuditLog, { AUDIT_ACTIONS, AUDIT_RESULT } from '../models/AuditLog.js';
 import { authenticate, authorize } from '../middleware/auth.middleware.js';
 import { escalateAlert } from '../services/escalation.service.js';
 import { recordCareEvent } from '../services/blockchain.service.js';
@@ -257,7 +257,9 @@ router.post('/',
 
       // Verify patient exists
       const patient = await Patient.findById(patientId)
-        .populate('assignedCaregivers', 'firstName lastName phone email');
+        .populate('primaryCaregiver', 'firstName lastName phone email')
+        .populate('backupCaregivers.caregiver', 'firstName lastName phone email')
+        .populate('assignedCHW', 'firstName lastName phone email');
       
       if (!patient) {
         return res.status(404).json({
@@ -266,18 +268,46 @@ router.post('/',
         });
       }
 
+      const caregiverUsers = [
+        patient.primaryCaregiver,
+        ...(patient.backupCaregivers || []).map((entry) => entry?.caregiver).filter(Boolean),
+      ].filter(Boolean);
+
+      const caregiverIds = caregiverUsers
+        .map((user) => user?._id || user)
+        .filter(Boolean);
+
+      const normalizedType =
+        type === 'fall' ? 'fall_detected' :
+        type === 'vital_anomaly' ? 'vital_sign' :
+        type === 'manual' ? 'panic' :
+        type;
+
+      const normalizedSourceType =
+        source === 'iot_device' ? 'sensor' :
+        source === 'caregiver_app' ? 'manual' :
+        source === 'system' ? 'system' :
+        'manual';
+
+      const title = getAlertTitle(normalizedType);
+      const message = description || getAlertMessage({ type: normalizedType, severity });
+
       // Create alert
       const alert = new Alert({
         patient: patientId,
-        type,
+        type: normalizedType,
         severity,
-        source,
-        description: description || getDefaultDescription(type),
-        location: location || patient.location,
-        vitalData,
-        device: deviceId,
-        status: 'active',
-        assignedCaregivers: patient.assignedCaregivers.map(cg => cg._id || cg),
+        title,
+        message,
+        source: {
+          type: normalizedSourceType,
+          deviceId: deviceId || undefined,
+          sensorType: normalizedType,
+          triggerValue: vitalData || undefined
+        },
+        location: location || patient.location || patient.address?.coordinates,
+        vitalSnapshot: vitalData || undefined,
+        assignedCaregivers: caregiverIds,
         escalationLevel: 0,
         manualTrigger: manualTrigger || false,
         createdBy: req.user._id
@@ -293,7 +323,7 @@ router.post('/',
           actorId: req.user._id.toString(),
           metadata: {
             alertId: alert._id.toString(),
-            alertType: type,
+            alertType: normalizedType,
             severity
           }
         });
@@ -309,26 +339,37 @@ router.post('/',
       }
 
       // Create audit log
-      await AuditLog.create({
-        action: 'ALERT_CREATED',
-        actor: {
-          userId: req.user._id,
-          email: req.user.email,
-          role: req.user.role
-        },
-        resource: {
-          type: 'Alert',
-          id: alert._id
-        },
-        details: {
-          message: `${type} alert created for patient ${patient.firstName} ${patient.lastName}`,
-          alertType: type,
-          severity,
-          patientId
-        },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent']
-      });
+      try {
+        await AuditLog.create({
+          action: AUDIT_ACTIONS.ALERT_TRIGGER,
+          category: 'alert',
+          result: AUDIT_RESULT.SUCCESS,
+          actor: {
+            userId: req.user._id,
+            email: req.user.email,
+            role: req.user.role
+          },
+          target: {
+            type: 'alert',
+            id: alert._id,
+            model: 'Alert',
+            description: `${normalizedType} alert created for ${patient.firstName} ${patient.lastName}`
+          },
+          request: {
+            method: req.method,
+            endpoint: req.originalUrl,
+            userAgent: req.headers['user-agent'],
+            ipAddress: req.ip
+          },
+          details: {
+            alertType: normalizedType,
+            severity,
+            patientId
+          }
+        });
+      } catch (auditError) {
+        logger.warn('Audit log write failed (create alert)', { message: auditError.message });
+      }
 
       // Emit real-time notification via Socket.IO
       const io = req.app.get('io');
@@ -346,8 +387,11 @@ router.post('/',
         });
 
         // Notify assigned caregivers
-        patient.assignedCaregivers.forEach(caregiver => {
-          io.to(`user:${caregiver._id}`).emit('alert:new', {
+        caregiverUsers.forEach((caregiver) => {
+          const caregiverId = caregiver?._id || caregiver;
+          if (!caregiverId) return;
+
+          io.to(`user:${caregiverId}`).emit('alert:new', {
             id: alert._id,
             type: alert.type,
             severity: alert.severity,
@@ -893,14 +937,31 @@ router.get('/stats/summary',
 function getDefaultDescription(type) {
   const descriptions = {
     fall: 'Fall detected by IoT device',
+    fall_detected: 'Fall detected by IoT device',
     panic: 'Panic button activated',
     vital_anomaly: 'Vital signs outside normal range',
+    vital_sign: 'Vital signs outside normal range',
     missed_checkin: 'Scheduled check-in not completed',
     device_offline: 'Patient device offline or unreachable',
     geofence: 'Patient has left designated safe zone',
     manual: 'Manual alert triggered by caregiver'
   };
   return descriptions[type] || 'Alert triggered';
+}
+
+function getAlertTitle(type) {
+  const titles = {
+    fall: 'Fall Detected',
+    fall_detected: 'Fall Detected',
+    panic: 'Panic Alert',
+    vital_anomaly: 'Abnormal Vitals',
+    vital_sign: 'Abnormal Vitals',
+    missed_checkin: 'Missed Check-in',
+    device_offline: 'Device Offline',
+    geofence: 'Geofence Alert',
+    manual: 'Manual Alert'
+  };
+  return titles[type] || 'Alert';
 }
 
 function getAlertMessage(alert) {

@@ -558,7 +558,9 @@ const AlertDetailPage = () => {
                         <ListItemText
                           primary={
                             <Typography variant="body2" fontWeight={500}>
-                              {event.action.charAt(0).toUpperCase() + event.action.slice(1)}
+                              {event.action
+                                ? event.action.charAt(0).toUpperCase() + event.action.slice(1)
+                                : 'Event'}
                             </Typography>
                           }
                           secondary={
