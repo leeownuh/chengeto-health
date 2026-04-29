@@ -612,6 +612,24 @@ const SchedulePage = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const dateParam = params.get('date');
+    if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
+      const [year, month, day] = dateParam.split('-').map((value) => Number(value));
+      const parsed = new Date(year, month - 1, day);
+      if (!Number.isNaN(parsed.getTime())) {
+        setCurrentDate(parsed);
+        setSelectedDate(parsed);
+      }
+    }
+
+    const viewParam = params.get('view');
+    if (viewParam && ['day', 'week', 'month'].includes(String(viewParam).toLowerCase())) {
+      setView(String(viewParam).toLowerCase());
+    }
+  }, []);
+
   // Dialogs
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);

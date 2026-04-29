@@ -1,8 +1,8 @@
 {
-  "startedAt": "2026-04-25T05:22:12.675Z",
+  "startedAt": "2026-04-26T06:54:23.559Z",
   "baseUrl": "http://127.0.0.1:80",
   "apiBaseUrl": "http://127.0.0.1:5000/api/v1",
-  "outRoot": "C:\\Projects\\chengeto\\docs\\ui-snapshots\\2026-04-25_105208",
+  "outRoot": "C:\\Projects\\chengeto\\docs\\ui-snapshots\\2026-04-26_122420",
   "roles": [
     {
       "role": "admin",
@@ -18,8 +18,8 @@
             "headings": [
               "Admin Dashboard",
               "3",
-              "2",
-              "0/3",
+              "1",
+              "2/3",
               "100%"
             ],
             "alerts": [],
@@ -92,17 +92,36 @@
           }
         },
         {
+          "route": "/checkin/history (integrity verify)",
+          "url": "http://127.0.0.1/checkin/history",
+          "screenshot": "admin__checkin_history__integrity_verify.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin/history",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Check-in History",
+              "0",
+              "12",
+              "48",
+              "82%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
           "route": "/schedule",
-          "url": "http://127.0.0.1/schedule",
+          "url": "http://127.0.0.1/schedule?date=2026-04-25",
           "screenshot": "admin__schedule.png",
           "state": {
-            "url": "http://127.0.0.1/schedule",
+            "url": "http://127.0.0.1/schedule?date=2026-04-25",
             "title": "CHENGETO Health",
             "headings": [
               "Schedule Management",
-              "7",
-              "7",
-              "0",
+              "6",
+              "2",
+              "4",
               "0"
             ],
             "alerts": [],
@@ -134,14 +153,14 @@
             "title": "CHENGETO Health",
             "headings": [
               "Alerts",
-              "18",
+              "3",
               "0",
               "1",
-              "21"
+              "5"
             ],
             "alerts": [
-              "19 critical alert(s) require immediate attention!View Critical Alerts",
-              "19 critical alert(s) require immediate attention!"
+              "2 critical alert(s) require immediate attention!View Critical Alerts",
+              "2 critical alert(s) require immediate attention!"
             ],
             "offlineBanner": "",
             "theme": "light"
@@ -156,14 +175,14 @@
             "title": "CHENGETO Health",
             "headings": [
               "Alerts",
-              "18",
+              "3",
               "0",
               "1",
-              "21"
+              "5"
             ],
             "alerts": [
-              "19 critical alert(s) require immediate attention!View Critical Alerts",
-              "19 critical alert(s) require immediate attention!"
+              "2 critical alert(s) require immediate attention!View Critical Alerts",
+              "2 critical alert(s) require immediate attention!"
             ],
             "offlineBanner": "",
             "theme": "light"
@@ -185,6 +204,22 @@
           }
         },
         {
+          "route": "/mfa-setup",
+          "url": "http://127.0.0.1/mfa-setup",
+          "screenshot": "admin__mfa-setup.png",
+          "state": {
+            "url": "http://127.0.0.1/mfa-setup",
+            "title": "CHENGETO Health",
+            "headings": [
+              "CHENGETO Health",
+              "Two-Factor Authentication"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
           "route": "/profile",
           "url": "http://127.0.0.1/profile",
           "screenshot": "admin__profile.png",
@@ -193,7 +228,7 @@
             "title": "CHENGETO Health",
             "headings": [
               "System Administrator",
-              "0",
+              "1",
               "3",
               "0",
               "0"
@@ -204,31 +239,31 @@
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
-          "screenshot": "admin__patients_69ea0a3ecb117a5c9e2a213a.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40",
+          "screenshot": "admin__patients_69edb68ca987c89bcc5b0a40.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40",
             "title": "CHENGETO Health",
             "headings": [
               "Rutendo Chiwenga"
             ],
             "alerts": [
-              "This patient has 19 active alert(s) that require attention.View Alerts",
-              "This patient has 19 active alert(s) that require attention.View Alerts",
-              "Critical priority because of 19 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions",
-              "Critical priority because of 19 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions"
+              "This patient has 3 active alert(s) that require attention.View Alerts",
+              "This patient has 3 active alert(s) that require attention.View Alerts",
+              "Critical priority because of 2 critical alerts active, low oxygen saturation, heart rate out of range. 1 care transition workflow(s) are active.View Transitions",
+              "Critical priority because of 2 critical alerts active, low oxygen saturation, heart rate out of range. 1 care transition workflow(s) are active.View Transitions"
             ],
             "offlineBanner": "",
             "theme": "light"
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a/edit",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
-          "screenshot": "admin__patients_69ea0a3ecb117a5c9e2a213a_edit.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40/edit",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/edit",
+          "screenshot": "admin__patients_69edb68ca987c89bcc5b0a40_edit.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/edit",
             "title": "CHENGETO Health",
             "headings": [
               "Edit Patient"
@@ -239,11 +274,11 @@
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a/vitals",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
-          "screenshot": "admin__patients_69ea0a3ecb117a5c9e2a213a_vitals.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40/vitals",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/vitals",
+          "screenshot": "admin__patients_69edb68ca987c89bcc5b0a40_vitals.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/vitals",
             "title": "CHENGETO Health",
             "headings": [
               "Vital Signs",
@@ -258,13 +293,30 @@
           }
         },
         {
-          "route": "/alerts/69ec4d8acb094daa60faa1d0",
-          "url": "http://127.0.0.1/alerts/69ec4d8acb094daa60faa1d0",
-          "screenshot": "admin__alerts_69ec4d8acb094daa60faa1d0.png",
+          "route": "/alerts/69edb6d180e7f503a5e6a8dd",
+          "url": "http://127.0.0.1/alerts/69edb6d180e7f503a5e6a8dd",
+          "screenshot": "admin__alerts_69edb6d180e7f503a5e6a8dd.png",
           "state": {
-            "url": "http://127.0.0.1/alerts/69ec4d8acb094daa60faa1d0",
+            "url": "http://127.0.0.1/alerts/69edb6d180e7f503a5e6a8dd",
             "title": "CHENGETO Health",
-            "headings": [],
+            "headings": [
+              "Alert Details"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/alerts/69edb6d180e7f503a5e6a8dd (integrity verify)",
+          "url": "http://127.0.0.1/alerts/69edb6d180e7f503a5e6a8dd",
+          "screenshot": "admin__alert__integrity_verify.png",
+          "state": {
+            "url": "http://127.0.0.1/alerts/69edb6d180e7f503a5e6a8dd",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Alert Details"
+            ],
             "alerts": [],
             "offlineBanner": "",
             "theme": "light"
@@ -325,6 +377,7 @@
             "alerts": [
               "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
               "Offline mode: showing cached alert data. Some actions may be limited until you reconnect.",
+              "Offline: showing cached alerts",
               "Offline: showing cached alerts"
             ],
             "offlineBanner": "",
@@ -340,9 +393,9 @@
             "title": "CHENGETO Health",
             "headings": [
               "Schedule Management",
-              "7",
-              "7",
-              "0",
+              "6",
+              "2",
+              "4",
               "0"
             ],
             "alerts": [],
@@ -364,7 +417,7 @@
             "url": "http://127.0.0.1/dashboard",
             "title": "CHENGETO Health",
             "headings": [
-              "Good Morning, Tariro",
+              "Good Afternoon, Tariro",
               "3",
               "0",
               "0",
@@ -441,16 +494,16 @@
         },
         {
           "route": "/schedule",
-          "url": "http://127.0.0.1/schedule",
+          "url": "http://127.0.0.1/schedule?date=2026-04-25",
           "screenshot": "caregiver__schedule.png",
           "state": {
-            "url": "http://127.0.0.1/schedule",
+            "url": "http://127.0.0.1/schedule?date=2026-04-25",
             "title": "CHENGETO Health",
             "headings": [
               "Schedule Management",
-              "7",
-              "7",
-              "0",
+              "6",
+              "2",
+              "4",
               "0"
             ],
             "alerts": [],
@@ -482,14 +535,14 @@
             "title": "CHENGETO Health",
             "headings": [
               "Alerts",
-              "18",
+              "3",
               "0",
               "1",
-              "21"
+              "5"
             ],
             "alerts": [
-              "19 critical alert(s) require immediate attention!View Critical Alerts",
-              "19 critical alert(s) require immediate attention!"
+              "2 critical alert(s) require immediate attention!View Critical Alerts",
+              "2 critical alert(s) require immediate attention!"
             ],
             "offlineBanner": "",
             "theme": "light"
@@ -504,6 +557,22 @@
             "title": "CHENGETO Health",
             "headings": [
               "Settings"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/mfa-setup",
+          "url": "http://127.0.0.1/mfa-setup",
+          "screenshot": "caregiver__mfa-setup.png",
+          "state": {
+            "url": "http://127.0.0.1/mfa-setup",
+            "title": "CHENGETO Health",
+            "headings": [
+              "CHENGETO Health",
+              "Two-Factor Authentication"
             ],
             "alerts": [],
             "offlineBanner": "",
@@ -530,31 +599,31 @@
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
-          "screenshot": "caregiver__patients_69ea0a3ecb117a5c9e2a213a.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40",
+          "screenshot": "caregiver__patients_69edb68ca987c89bcc5b0a40.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40",
             "title": "CHENGETO Health",
             "headings": [
               "Rutendo Chiwenga"
             ],
             "alerts": [
-              "This patient has 19 active alert(s) that require attention.View Alerts",
-              "This patient has 19 active alert(s) that require attention.View Alerts",
-              "Critical priority because of 19 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions",
-              "Critical priority because of 19 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions"
+              "This patient has 3 active alert(s) that require attention.View Alerts",
+              "This patient has 3 active alert(s) that require attention.View Alerts",
+              "Critical priority because of 2 critical alerts active, low oxygen saturation, heart rate out of range. 1 care transition workflow(s) are active.View Transitions",
+              "Critical priority because of 2 critical alerts active, low oxygen saturation, heart rate out of range. 1 care transition workflow(s) are active.View Transitions"
             ],
             "offlineBanner": "",
             "theme": "light"
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a/edit",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
-          "screenshot": "caregiver__patients_69ea0a3ecb117a5c9e2a213a_edit.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40/edit",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/edit",
+          "screenshot": "caregiver__patients_69edb68ca987c89bcc5b0a40_edit.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/edit",
             "title": "CHENGETO Health",
             "headings": [
               "Edit Patient"
@@ -565,11 +634,11 @@
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a/vitals",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
-          "screenshot": "caregiver__patients_69ea0a3ecb117a5c9e2a213a_vitals.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40/vitals",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/vitals",
+          "screenshot": "caregiver__patients_69edb68ca987c89bcc5b0a40_vitals.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/vitals",
             "title": "CHENGETO Health",
             "headings": [
               "Vital Signs",
@@ -584,14 +653,19 @@
           }
         },
         {
-          "route": "/alerts/69ec4ff8cb094daa60faa7f7",
-          "url": "http://127.0.0.1/alerts/69ec4ff8cb094daa60faa7f7",
-          "screenshot": "caregiver__alerts_69ec4ff8cb094daa60faa7f7.png",
+          "route": "/alerts/69edb72380e7f503a5e6a9c6",
+          "url": "http://127.0.0.1/alerts/69edb72380e7f503a5e6a9c6",
+          "screenshot": "caregiver__alerts_69edb72380e7f503a5e6a9c6.png",
           "state": {
-            "url": "http://127.0.0.1/alerts/69ec4ff8cb094daa60faa7f7",
+            "url": "http://127.0.0.1/alerts/69edb72380e7f503a5e6a9c6",
             "title": "CHENGETO Health",
-            "headings": [],
-            "alerts": [],
+            "headings": [
+              "Alert Details"
+            ],
+            "alerts": [
+              "This is a critical alert that requires immediate attention!",
+              "This is a critical alert that requires immediate attention!"
+            ],
             "offlineBanner": "",
             "theme": "light"
           }
@@ -667,9 +741,9 @@
             "title": "CHENGETO Health",
             "headings": [
               "Schedule Management",
-              "7",
-              "7",
-              "0",
+              "6",
+              "2",
+              "4",
               "0"
             ],
             "alerts": [],
@@ -768,16 +842,16 @@
         },
         {
           "route": "/schedule",
-          "url": "http://127.0.0.1/schedule",
+          "url": "http://127.0.0.1/schedule?date=2026-04-25",
           "screenshot": "chw__schedule.png",
           "state": {
-            "url": "http://127.0.0.1/schedule",
+            "url": "http://127.0.0.1/schedule?date=2026-04-25",
             "title": "CHENGETO Health",
             "headings": [
               "Schedule Management",
-              "7",
-              "7",
-              "0",
+              "6",
+              "2",
+              "4",
               "0"
             ],
             "alerts": [],
@@ -809,14 +883,14 @@
             "title": "CHENGETO Health",
             "headings": [
               "Alerts",
-              "19",
+              "4",
               "0",
               "1",
-              "22"
+              "6"
             ],
             "alerts": [
-              "20 critical alert(s) require immediate attention!View Critical Alerts",
-              "20 critical alert(s) require immediate attention!"
+              "3 critical alert(s) require immediate attention!View Critical Alerts",
+              "3 critical alert(s) require immediate attention!"
             ],
             "offlineBanner": "",
             "theme": "light"
@@ -831,14 +905,14 @@
             "title": "CHENGETO Health",
             "headings": [
               "Alerts",
-              "19",
+              "4",
               "0",
               "1",
-              "22"
+              "6"
             ],
             "alerts": [
-              "20 critical alert(s) require immediate attention!View Critical Alerts",
-              "20 critical alert(s) require immediate attention!"
+              "3 critical alert(s) require immediate attention!View Critical Alerts",
+              "3 critical alert(s) require immediate attention!"
             ],
             "offlineBanner": "",
             "theme": "light"
@@ -853,6 +927,22 @@
             "title": "CHENGETO Health",
             "headings": [
               "Settings"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/mfa-setup",
+          "url": "http://127.0.0.1/mfa-setup",
+          "screenshot": "chw__mfa-setup.png",
+          "state": {
+            "url": "http://127.0.0.1/mfa-setup",
+            "title": "CHENGETO Health",
+            "headings": [
+              "CHENGETO Health",
+              "Two-Factor Authentication"
             ],
             "alerts": [],
             "offlineBanner": "",
@@ -879,31 +969,31 @@
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
-          "screenshot": "chw__patients_69ea0a3ecb117a5c9e2a213a.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40",
+          "screenshot": "chw__patients_69edb68ca987c89bcc5b0a40.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40",
             "title": "CHENGETO Health",
             "headings": [
               "Rutendo Chiwenga"
             ],
             "alerts": [
-              "This patient has 20 active alert(s) that require attention.View Alerts",
-              "This patient has 20 active alert(s) that require attention.View Alerts",
-              "Critical priority because of 20 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions",
-              "Critical priority because of 20 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions"
+              "This patient has 4 active alert(s) that require attention.View Alerts",
+              "This patient has 4 active alert(s) that require attention.View Alerts",
+              "Critical priority because of 3 critical alerts active, low oxygen saturation, heart rate out of range. 1 care transition workflow(s) are active.View Transitions",
+              "Critical priority because of 3 critical alerts active, low oxygen saturation, heart rate out of range. 1 care transition workflow(s) are active.View Transitions"
             ],
             "offlineBanner": "",
             "theme": "light"
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a/edit",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
-          "screenshot": "chw__patients_69ea0a3ecb117a5c9e2a213a_edit.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40/edit",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/edit",
+          "screenshot": "chw__patients_69edb68ca987c89bcc5b0a40_edit.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/edit",
             "title": "CHENGETO Health",
             "headings": [
               "Edit Patient"
@@ -914,11 +1004,11 @@
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a/vitals",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
-          "screenshot": "chw__patients_69ea0a3ecb117a5c9e2a213a_vitals.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40/vitals",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/vitals",
+          "screenshot": "chw__patients_69edb68ca987c89bcc5b0a40_vitals.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/vitals",
             "title": "CHENGETO Health",
             "headings": [
               "Vital Signs",
@@ -933,14 +1023,19 @@
           }
         },
         {
-          "route": "/alerts/69ec4ff8cb094daa60faa7f7",
-          "url": "http://127.0.0.1/alerts/69ec4ff8cb094daa60faa7f7",
-          "screenshot": "chw__alerts_69ec4ff8cb094daa60faa7f7.png",
+          "route": "/alerts/69edb72380e7f503a5e6a9c6",
+          "url": "http://127.0.0.1/alerts/69edb72380e7f503a5e6a9c6",
+          "screenshot": "chw__alerts_69edb72380e7f503a5e6a9c6.png",
           "state": {
-            "url": "http://127.0.0.1/alerts/69ec4ff8cb094daa60faa7f7",
+            "url": "http://127.0.0.1/alerts/69edb72380e7f503a5e6a9c6",
             "title": "CHENGETO Health",
-            "headings": [],
-            "alerts": [],
+            "headings": [
+              "Alert Details"
+            ],
+            "alerts": [
+              "This is a critical alert that requires immediate attention!",
+              "This is a critical alert that requires immediate attention!"
+            ],
             "offlineBanner": "",
             "theme": "light"
           }
@@ -1016,9 +1111,9 @@
             "title": "CHENGETO Health",
             "headings": [
               "Schedule Management",
-              "7",
-              "7",
-              "0",
+              "6",
+              "2",
+              "4",
               "0"
             ],
             "alerts": [],
@@ -1110,17 +1205,36 @@
           }
         },
         {
+          "route": "/checkin/history (integrity verify)",
+          "url": "http://127.0.0.1/checkin/history",
+          "screenshot": "clinician__checkin_history__integrity_verify.png",
+          "state": {
+            "url": "http://127.0.0.1/checkin/history",
+            "title": "CHENGETO Health",
+            "headings": [
+              "Check-in History",
+              "0",
+              "12",
+              "48",
+              "82%"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
           "route": "/schedule",
-          "url": "http://127.0.0.1/schedule",
+          "url": "http://127.0.0.1/schedule?date=2026-04-25",
           "screenshot": "clinician__schedule.png",
           "state": {
-            "url": "http://127.0.0.1/schedule",
+            "url": "http://127.0.0.1/schedule?date=2026-04-25",
             "title": "CHENGETO Health",
             "headings": [
               "Schedule Management",
-              "7",
-              "7",
-              "0",
+              "6",
+              "2",
+              "4",
               "0"
             ],
             "alerts": [],
@@ -1152,14 +1266,14 @@
             "title": "CHENGETO Health",
             "headings": [
               "Alerts",
-              "19",
+              "4",
               "0",
               "1",
-              "22"
+              "6"
             ],
             "alerts": [
-              "20 critical alert(s) require immediate attention!View Critical Alerts",
-              "20 critical alert(s) require immediate attention!"
+              "3 critical alert(s) require immediate attention!View Critical Alerts",
+              "3 critical alert(s) require immediate attention!"
             ],
             "offlineBanner": "",
             "theme": "light"
@@ -1174,6 +1288,22 @@
             "title": "CHENGETO Health",
             "headings": [
               "Settings"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
+          "route": "/mfa-setup",
+          "url": "http://127.0.0.1/mfa-setup",
+          "screenshot": "clinician__mfa-setup.png",
+          "state": {
+            "url": "http://127.0.0.1/mfa-setup",
+            "title": "CHENGETO Health",
+            "headings": [
+              "CHENGETO Health",
+              "Two-Factor Authentication"
             ],
             "alerts": [],
             "offlineBanner": "",
@@ -1200,31 +1330,31 @@
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
-          "screenshot": "clinician__patients_69ea0a3ecb117a5c9e2a213a.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40",
+          "screenshot": "clinician__patients_69edb68ca987c89bcc5b0a40.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40",
             "title": "CHENGETO Health",
             "headings": [
               "Rutendo Chiwenga"
             ],
             "alerts": [
-              "This patient has 20 active alert(s) that require attention.View Alerts",
-              "This patient has 20 active alert(s) that require attention.View Alerts",
-              "Critical priority because of 20 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions",
-              "Critical priority because of 20 critical alerts active, recent fall with injury risk, low oxygen saturation. 1 care transition workflow(s) are active.View Transitions"
+              "This patient has 4 active alert(s) that require attention.View Alerts",
+              "This patient has 4 active alert(s) that require attention.View Alerts",
+              "Critical priority because of 3 critical alerts active, low oxygen saturation, heart rate out of range. 1 care transition workflow(s) are active.View Transitions",
+              "Critical priority because of 3 critical alerts active, low oxygen saturation, heart rate out of range. 1 care transition workflow(s) are active.View Transitions"
             ],
             "offlineBanner": "",
             "theme": "light"
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a/edit",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
-          "screenshot": "clinician__patients_69ea0a3ecb117a5c9e2a213a_edit.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40/edit",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/edit",
+          "screenshot": "clinician__patients_69edb68ca987c89bcc5b0a40_edit.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/edit",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/edit",
             "title": "CHENGETO Health",
             "headings": [
               "Edit Patient"
@@ -1235,11 +1365,11 @@
           }
         },
         {
-          "route": "/patients/69ea0a3ecb117a5c9e2a213a/vitals",
-          "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
-          "screenshot": "clinician__patients_69ea0a3ecb117a5c9e2a213a_vitals.png",
+          "route": "/patients/69edb68ca987c89bcc5b0a40/vitals",
+          "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/vitals",
+          "screenshot": "clinician__patients_69edb68ca987c89bcc5b0a40_vitals.png",
           "state": {
-            "url": "http://127.0.0.1/patients/69ea0a3ecb117a5c9e2a213a/vitals",
+            "url": "http://127.0.0.1/patients/69edb68ca987c89bcc5b0a40/vitals",
             "title": "CHENGETO Health",
             "headings": [
               "Vital Signs",
@@ -1254,14 +1384,19 @@
           }
         },
         {
-          "route": "/alerts/69ec5100cb094daa60faabc3",
-          "url": "http://127.0.0.1/alerts/69ec5100cb094daa60faabc3",
-          "screenshot": "clinician__alerts_69ec5100cb094daa60faabc3.png",
+          "route": "/alerts/69edb84880e7f503a5e6ada1",
+          "url": "http://127.0.0.1/alerts/69edb84880e7f503a5e6ada1",
+          "screenshot": "clinician__alerts_69edb84880e7f503a5e6ada1.png",
           "state": {
-            "url": "http://127.0.0.1/alerts/69ec5100cb094daa60faabc3",
+            "url": "http://127.0.0.1/alerts/69edb84880e7f503a5e6ada1",
             "title": "CHENGETO Health",
-            "headings": [],
-            "alerts": [],
+            "headings": [
+              "Alert Details"
+            ],
+            "alerts": [
+              "This is a critical alert that requires immediate attention!",
+              "This is a critical alert that requires immediate attention!"
+            ],
             "offlineBanner": "",
             "theme": "light"
           }
@@ -1337,9 +1472,9 @@
             "title": "CHENGETO Health",
             "headings": [
               "Schedule Management",
-              "7",
-              "7",
-              "0",
+              "6",
+              "2",
+              "4",
               "0"
             ],
             "alerts": [],
@@ -1368,12 +1503,12 @@
               "1 active alert(s) require attention",
               "1 medication task(s) due today",
               "1 medication task(s) due today",
-              "1 medication task(s) due today | 1 refill risk(s)",
-              "1 medication task(s) due today | 1 refill risk(s)",
-              "20 active alert(s) require attention",
-              "20 active alert(s) require attention",
-              "2 medication task(s) due today | 2 refill risk(s)",
-              "2 medication task(s) due today | 2 refill risk(s)"
+              "1 medication task(s) due today",
+              "1 medication task(s) due today",
+              "4 active alert(s) require attention",
+              "4 active alert(s) require attention",
+              "1 medication task(s) due today",
+              "1 medication task(s) due today"
             ],
             "offlineBanner": "",
             "theme": "light"
@@ -1451,10 +1586,10 @@
         },
         {
           "route": "/schedule",
-          "url": "http://127.0.0.1/schedule",
+          "url": "http://127.0.0.1/schedule?date=2026-04-25",
           "screenshot": "family__schedule.png",
           "state": {
-            "url": "http://127.0.0.1/schedule",
+            "url": "http://127.0.0.1/schedule?date=2026-04-25",
             "title": "CHENGETO Health",
             "headings": [
               "Schedule Management",
@@ -1518,6 +1653,22 @@
           }
         },
         {
+          "route": "/mfa-setup",
+          "url": "http://127.0.0.1/mfa-setup",
+          "screenshot": "family__mfa-setup.png",
+          "state": {
+            "url": "http://127.0.0.1/mfa-setup",
+            "title": "CHENGETO Health",
+            "headings": [
+              "CHENGETO Health",
+              "Two-Factor Authentication"
+            ],
+            "alerts": [],
+            "offlineBanner": "",
+            "theme": "light"
+          }
+        },
+        {
           "route": "/profile",
           "url": "http://127.0.0.1/profile",
           "screenshot": "family__profile.png",
@@ -1526,7 +1677,7 @@
             "title": "CHENGETO Health",
             "headings": [
               "Kudzai Moyo",
-              "4",
+              "5",
               "3",
               "0",
               "0"
@@ -1537,14 +1688,19 @@
           }
         },
         {
-          "route": "/alerts/69ec5100cb094daa60faabc3",
-          "url": "http://127.0.0.1/alerts/69ec5100cb094daa60faabc3",
-          "screenshot": "family__alerts_69ec5100cb094daa60faabc3.png",
+          "route": "/alerts/69edb84880e7f503a5e6ada1",
+          "url": "http://127.0.0.1/alerts/69edb84880e7f503a5e6ada1",
+          "screenshot": "family__alerts_69edb84880e7f503a5e6ada1.png",
           "state": {
-            "url": "http://127.0.0.1/alerts/69ec5100cb094daa60faabc3",
+            "url": "http://127.0.0.1/alerts/69edb84880e7f503a5e6ada1",
             "title": "CHENGETO Health",
-            "headings": [],
-            "alerts": [],
+            "headings": [
+              "Alert Details"
+            ],
+            "alerts": [
+              "This is a critical alert that requires immediate attention!",
+              "This is a critical alert that requires immediate attention!"
+            ],
             "offlineBanner": "",
             "theme": "light"
           }
@@ -1693,26 +1849,7 @@
         "offlineBanner": "",
         "theme": "light"
       }
-    },
-    {
-      "route": "/mfa-setup",
-      "url": "http://127.0.0.1/mfa-setup",
-      "screenshot": "public__mfa-setup.png",
-      "state": {
-        "url": "http://127.0.0.1/mfa-setup",
-        "title": "CHENGETO Health",
-        "headings": [
-          "CHENGETO Health",
-          "Two-Factor Authentication"
-        ],
-        "alerts": [
-          "Failed to generate QR code. Please refresh.",
-          "Failed to generate QR code. Please refresh."
-        ],
-        "offlineBanner": "",
-        "theme": "light"
-      }
     }
   ],
-  "finishedAt": "2026-04-25T05:32:51.310Z"
+  "finishedAt": "2026-04-26T07:06:09.270Z"
 }

@@ -45,13 +45,14 @@ import {
   dashboardRoutes,
   scheduleRoutes,
   userRoutes,
-  careTransitionRoutes
+  careTransitionRoutes,
+  blockchainRoutes
 } from '../routes/index.js';
 
 // Import middleware
 import { globalErrorHandler, notFoundHandler } from '../middleware/error.middleware.js';
 import { rateLimiter } from '../middleware/rateLimit.middleware.js';
-import { getMetricsHandler, metricsMiddleware } from './metrics.js';
+import { getMetricsHandler, metricsMiddleware, initializeAppMetrics } from './metrics.js';
 
 // Import services
 import { initializeSocketService } from '../services/socket.service.js';
@@ -164,6 +165,17 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Root endpoint (useful for platform health checks / quick validation)
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    service: 'chengeto-health-backend',
+    message: 'CHENGETO Health API is running. Use /api/v1/* for API routes.',
+    health: '/health',
+    metrics: '/metrics'
+  });
+});
+
 // Prometheus metrics endpoint
 app.get('/metrics', getMetricsHandler);
 
@@ -181,6 +193,7 @@ app.use(`${API_VERSION}/alerts`, alertRoutes);
 app.use(`${API_VERSION}/iot`, iotRoutes);
 app.use(`${API_VERSION}/dashboard`, dashboardRoutes);
 app.use(`${API_VERSION}/transitions`, careTransitionRoutes);
+app.use(`${API_VERSION}/blockchain`, blockchainRoutes);
 
 // Backward-compatible route aliases used by older frontend screens.
 app.use('/api/auth', authRoutes);
@@ -197,6 +210,7 @@ app.use('/api/alerts', alertRoutes);
 app.use('/api/iot', iotRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/transitions', careTransitionRoutes);
+app.use('/api/blockchain', blockchainRoutes);
 
 // Serve static files in production when the frontend bundle exists locally.
 const frontendDist = join(__dirname, '../../frontend/dist');
@@ -250,6 +264,9 @@ const startServer = async () => {
     // Connect to MongoDB
     await connectDatabase();
     logger.info('MongoDB connected successfully');
+
+    // Start app-level Prometheus gauges (patients/alerts/checkins/devices/users).
+    initializeAppMetrics();
 
     // Setup MQTT Broker
     const mqttBroker = await setupMQTTBroker();

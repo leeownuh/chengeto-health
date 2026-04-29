@@ -56,6 +56,7 @@ import { useSocket } from '../../contexts/SocketContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useOffline } from '../../contexts/OfflineContext';
 import { format, formatDistanceToNow } from 'date-fns';
+import IntegrityVerifier from '../../components/blockchain/IntegrityVerifier';
 
 const AlertDetailPage = () => {
   const { id } = useParams();
@@ -727,14 +728,22 @@ const AlertDetailPage = () => {
                 >
                   {alert.blockchainRecord.transactionHash}
                 </Typography>
+                {alert.blockchainRecord.dataHash && (
+                  <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                    dataHash: {String(alert.blockchainRecord.dataHash).slice(0, 12)}...
+                  </Typography>
+                )}
                 <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
                   Block: {alert.blockchainRecord.blockNumber}
                 </Typography>
                 <Typography variant="caption" color="text.secondary" display="block">
-                  Recorded: {alert.blockchainRecord.timestamp
-                    ? format(new Date(alert.blockchainRecord.timestamp), 'PPpp')
+                  Recorded: {alert.blockchainRecord.recordedAt
+                    ? format(new Date(alert.blockchainRecord.recordedAt), 'PPpp')
                     : '--'}
                 </Typography>
+                <Box sx={{ mt: 2 }}>
+                  <IntegrityVerifier entityType="alert" id={alert._id} dense />
+                </Box>
               </CardContent>
             </Card>
           )}

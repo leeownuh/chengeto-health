@@ -535,7 +535,7 @@ router.post('/manual',
       });
 
       try {
-        const blockchainResult = await recordCareEvent({
+        const blockchainAnchor = {
           eventType: 'CHECKIN_COMPLETED',
           patientId: patient._id.toString(),
           actorId: req.user._id.toString(),
@@ -546,13 +546,20 @@ router.post('/manual',
             wellnessScore: score,
             notes: req.body.notes || ''
           }
-        });
+        };
+
+        const blockchainResult = await recordCareEvent(blockchainAnchor);
 
         checkIn.blockchainRecord = {
+          eventId: blockchainResult.eventId,
+          eventHash: blockchainResult.eventHash,
           transactionHash: blockchainResult.transactionHash,
           blockNumber: blockchainResult.blockNumber,
           recordedAt: blockchainResult.recordedAt,
-          dataHash: blockchainResult.dataHash
+          contractAddress: blockchainResult.contractAddress,
+          dataHash: blockchainResult.dataHash,
+          anchor: blockchainAnchor,
+          mock: Boolean(blockchainResult.mock)
         };
         checkIn.blockchainHash = blockchainResult.transactionHash;
         await checkIn.save();
@@ -946,7 +953,7 @@ router.post('/:id/complete',
 
       // Record on blockchain
       try {
-        const blockchainResult = await recordCareEvent({
+        const blockchainAnchor = {
           eventType: 'CHECKIN_COMPLETED',
           patientId: checkIn.patient._id.toString(),
           actorId: req.user._id.toString(),
@@ -956,12 +963,19 @@ router.post('/:id/complete',
             wellnessScore: checkIn.wellnessScore,
             duration: checkInDuration
           }
-        });
+        };
+
+        const blockchainResult = await recordCareEvent(blockchainAnchor);
         checkIn.blockchainRecord = {
+          eventId: blockchainResult.eventId,
+          eventHash: blockchainResult.eventHash,
           transactionHash: blockchainResult.transactionHash,
           blockNumber: blockchainResult.blockNumber,
           recordedAt: blockchainResult.recordedAt,
-          dataHash: blockchainResult.dataHash
+          contractAddress: blockchainResult.contractAddress,
+          dataHash: blockchainResult.dataHash,
+          anchor: blockchainAnchor,
+          mock: Boolean(blockchainResult.mock)
         };
         checkIn.blockchainHash = blockchainResult.transactionHash;
         await checkIn.save();

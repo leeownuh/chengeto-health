@@ -419,10 +419,20 @@ const checkinSchema = new Schema({
   
   // Blockchain Record
   blockchainRecord: {
+    eventId: String,
+    eventHash: String,
     transactionHash: String,
     blockNumber: Number,
     recordedAt: Date,
-    dataHash: String
+    contractAddress: String,
+    dataHash: String,
+    anchor: {
+      eventType: String,
+      patientId: String,
+      actorId: String,
+      metadata: Schema.Types.Mixed
+    },
+    mock: Boolean
   },
   blockchainHash: String,
   

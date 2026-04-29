@@ -31,7 +31,7 @@ import {
 } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import { useAuth } from '../../contexts/AuthContext';
-import axios from 'axios';
+import { api } from '../../contexts/AuthContext';
 
 const steps = ['Setup Authenticator', 'Verify Code', 'Complete'];
 
@@ -68,7 +68,7 @@ const MFASetupPage = () => {
   const generateMFASetup = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('/api/auth/mfa/setup');
+      const response = await api.post('/auth/mfa/setup');
       const data = response.data?.data || response.data || {};
       setSetupData({
         secret: data.secret || data.manualEntryKey || '',
@@ -76,7 +76,7 @@ const MFASetupPage = () => {
         uri: data.uri || '',
       });
     } catch (err) {
-      setError('Failed to generate MFA setup. Please try again.');
+      setError(err.response?.data?.message || 'Failed to generate MFA setup. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -115,7 +115,7 @@ const MFASetupPage = () => {
     setError('');
 
     try {
-      const response = await axios.post('/api/auth/mfa/verify', {
+      const response = await api.post('/auth/mfa/verify', {
         code: code || verificationCode.join(''),
       });
       const data = response.data?.data || response.data || {};

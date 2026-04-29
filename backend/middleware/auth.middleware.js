@@ -58,6 +58,7 @@ export const protect = asyncHandler(async (req, res, next) => {
     req.user = currentUser;
     req.token = token;
     req.tokenDecoded = decoded;
+    req.mfaVerified = Boolean(decoded?.mfaVerified) || !currentUser.mfaEnabled;
 
     // Log successful authentication
     logger.debug('User authenticated', {

@@ -18,7 +18,7 @@ const router = express.Router();
 
 const persistBlockchainAnchor = async (alert, req, eventType, metadata = {}, escalationLevel) => {
   try {
-    const blockchainResult = await recordCareEvent({
+    const blockchainAnchor = {
       eventType,
       patientId: (alert.patient?._id || alert.patient).toString(),
       actorId: req.user._id.toString(),
@@ -30,13 +30,20 @@ const persistBlockchainAnchor = async (alert, req, eventType, metadata = {}, esc
         status: alert.status,
         ...metadata
       }
-    });
+    };
+
+    const blockchainResult = await recordCareEvent(blockchainAnchor);
 
     alert.blockchainRecord = {
+      eventId: blockchainResult.eventId,
+      eventHash: blockchainResult.eventHash,
       transactionHash: blockchainResult.transactionHash,
       blockNumber: blockchainResult.blockNumber,
       recordedAt: blockchainResult.recordedAt,
-      dataHash: blockchainResult.dataHash
+      contractAddress: blockchainResult.contractAddress,
+      dataHash: blockchainResult.dataHash,
+      anchor: blockchainAnchor,
+      mock: Boolean(blockchainResult.mock)
     };
     alert.auditLog = alert.auditLog ?? [];
     alert.auditLog.push({

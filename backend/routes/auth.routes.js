@@ -36,16 +36,21 @@ const getQueryLimit = (value, fallback = DEFAULT_ACTIVITY_LIMIT) => {
 /**
  * Generate JWT tokens
  */
-function generateTokens(user) {
+function generateTokens(user, { mfaVerified = false } = {}) {
   const payload = {
     userId: user._id,
     email: user.email,
     role: user.role,
-    permissions: user.permissions
+    permissions: user.permissions,
+    mfaVerified: Boolean(mfaVerified) || !user.mfaEnabled
   };
 
   const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-  const refreshToken = jwt.sign({ userId: user._id }, JWT_REFRESH_SECRET, { expiresIn: JWT_REFRESH_EXPIRES_IN });
+  const refreshToken = jwt.sign(
+    { userId: user._id, mfaVerified: payload.mfaVerified },
+    JWT_REFRESH_SECRET,
+    { expiresIn: JWT_REFRESH_EXPIRES_IN }
+  );
 
   return { accessToken, refreshToken };
 }
@@ -242,6 +247,8 @@ router.post('/login',
         });
       }
 
+      let mfaVerified = !user.mfaEnabled;
+
       // Check if account is locked
       if (user.isLocked) {
         return res.status(423).json({
@@ -276,7 +283,8 @@ router.post('/login',
             success: true,
             message: 'MFA code required',
             data: {
-              requiresMFA: true
+              requiresMFA: true,
+              mfaEnabled: true
             }
           });
         }
@@ -284,7 +292,8 @@ router.post('/login',
         const isValidMFA = speakeasy.totp.verify({
           secret: user.mfaSecret,
           encoding: 'base32',
-          token: mfaCode
+          token: mfaCode,
+          window: 1
         });
 
         if (!isValidMFA) {
@@ -294,6 +303,8 @@ router.post('/login',
             message: 'Invalid MFA code'
           });
         }
+
+        mfaVerified = true;
       }
 
       // Reset login attempts on successful login
@@ -340,7 +351,7 @@ router.post('/login',
       await user.save();
 
       // Generate tokens
-      const { accessToken, refreshToken } = generateTokens(user);
+      const { accessToken, refreshToken } = generateTokens(user, { mfaVerified });
       setTokenCookies(res, accessToken, refreshToken);
 
       // Create audit log
@@ -386,6 +397,7 @@ router.post('/login',
             role: user.role,
             permissions: user.permissions,
             mfaEnabled: user.mfaEnabled,
+            mfaVerified,
             lastLogin: user.lastLogin
           },
           accessToken,
@@ -431,8 +443,10 @@ router.post('/refresh', async (req, res) => {
       });
     }
 
+    const refreshMfaVerified = Boolean(decoded?.mfaVerified) || !user.mfaEnabled;
+
     // Generate new tokens
-    const tokens = generateTokens(user);
+    const tokens = generateTokens(user, { mfaVerified: refreshMfaVerified });
     setTokenCookies(res, tokens.accessToken, tokens.refreshToken);
 
     res.json({
@@ -440,7 +454,8 @@ router.post('/refresh', async (req, res) => {
       message: 'Token refreshed',
       data: {
         accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken
+        refreshToken: tokens.refreshToken,
+        mfaVerified: refreshMfaVerified
       }
     });
 
@@ -514,7 +529,7 @@ router.post('/logout', authenticate, async (req, res) => {
  */
 router.post('/mfa/setup', authenticate, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id).select('+pendingMfaSecret');
     
     if (user.mfaEnabled) {
       return res.status(400).json({
@@ -571,7 +586,7 @@ router.post('/mfa/verify',
       }
 
       const { code } = req.body;
-      const user = await User.findById(req.user._id);
+      const user = await User.findById(req.user._id).select('+pendingMfaSecret');
 
       if (!user.pendingMfaSecret) {
         return res.status(400).json({
@@ -584,7 +599,8 @@ router.post('/mfa/verify',
       const isValid = speakeasy.totp.verify({
         secret: user.pendingMfaSecret,
         encoding: 'base32',
-        token: code
+        token: code,
+        window: 1
       });
 
       if (!isValid) {
@@ -598,26 +614,45 @@ router.post('/mfa/verify',
       user.mfaSecret = user.pendingMfaSecret;
       user.mfaEnabled = true;
       user.pendingMfaSecret = undefined;
+
+      const backupCodes = Array.from({ length: 8 }, () =>
+        crypto.randomBytes(4).toString('hex').toUpperCase()
+      );
+      user.mfaBackupCodes = backupCodes.map((value) => ({ code: value }));
       await user.save();
 
-      // Create audit log
-      await AuditLog.create({
-        action: 'MFA_ENABLED',
+      await createAuditLogSafe({
+        action: AUDIT_ACTIONS.MFA_ENABLED,
+        category: 'authentication',
+        result: AUDIT_RESULT.SUCCESS,
         actor: {
           userId: user._id,
           email: user.email,
           role: user.role
         },
+        target: {
+          type: 'user',
+          id: user._id,
+          model: 'User',
+          description: user.email
+        },
+        request: {
+          method: req.method,
+          endpoint: req.originalUrl,
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent']
+        },
         details: {
           message: 'MFA enabled for account'
-        },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent']
+        }
       });
 
       res.json({
         success: true,
-        message: 'MFA enabled successfully'
+        message: 'MFA enabled successfully',
+        data: {
+          backupCodes
+        }
       });
 
     } catch (error) {
@@ -644,7 +679,7 @@ router.post('/mfa/disable',
   async (req, res) => {
     try {
       const { password, code } = req.body;
-      const user = await User.findById(req.user._id).select('+password');
+      const user = await User.findById(req.user._id).select('+password +mfaSecret');
 
       // Verify password
       const isMatch = await user.comparePassword(password);
@@ -672,21 +707,33 @@ router.post('/mfa/disable',
       // Disable MFA
       user.mfaSecret = undefined;
       user.mfaEnabled = false;
+      user.mfaBackupCodes = [];
       await user.save();
 
-      // Create audit log
-      await AuditLog.create({
-        action: 'MFA_DISABLED',
+      await createAuditLogSafe({
+        action: AUDIT_ACTIONS.MFA_DISABLED,
+        category: 'authentication',
+        result: AUDIT_RESULT.SUCCESS,
         actor: {
           userId: user._id,
           email: user.email,
           role: user.role
         },
+        target: {
+          type: 'user',
+          id: user._id,
+          model: 'User',
+          description: user.email
+        },
+        request: {
+          method: req.method,
+          endpoint: req.originalUrl,
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent']
+        },
         details: {
           message: 'MFA disabled for account'
-        },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent']
+        }
       });
 
       res.json({
@@ -899,7 +946,10 @@ router.get('/me', authenticate, async (req, res) => {
 
     res.json({
       success: true,
-      data: user
+      data: {
+        ...(user?.toObject ? user.toObject() : user),
+        mfaVerified: Boolean(req.tokenDecoded?.mfaVerified) || !user.mfaEnabled
+      }
     });
 
   } catch (error) {

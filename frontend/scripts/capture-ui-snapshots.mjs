@@ -268,6 +268,45 @@ const ensureScheduleDayView = async (page) => {
   await page.waitForTimeout(250);
 };
 
+const waitForUiIdle = async (page) => {
+  const loadingSelectors = [
+    '.MuiCircularProgress-root',
+    '.MuiLinearProgress-root',
+    '.MuiSkeleton-root',
+    '[role="progressbar"]',
+    '[aria-busy="true"]',
+    '[data-loading="true"]'
+  ];
+
+  await page.waitForTimeout(300);
+  await page
+    .waitForFunction(
+      (selectors) => selectors.every((selector) => !document.querySelector(selector)),
+      loadingSelectors,
+      { timeout: 20000 }
+    )
+    .catch(() => {});
+  await page.waitForTimeout(200);
+};
+
+const captureIntegrityDialog = async (page, shotPath) => {
+  const verifyButton = page.getByRole('button', { name: /verify integrity/i });
+  if ((await verifyButton.count().catch(() => 0)) === 0) {
+    throw new Error('Verify integrity button not found');
+  }
+
+  await verifyButton.first().click();
+  await page.getByText('Blockchain integrity check', { exact: true }).first().waitFor({ timeout: 20000 });
+  await waitForUiIdle(page);
+  await page.screenshot({ path: shotPath, fullPage: true });
+
+  // Close the dialog(s) to keep subsequent captures stable.
+  await page.keyboard.press('Escape').catch(() => {});
+  await page.waitForTimeout(250);
+  await page.keyboard.press('Escape').catch(() => {});
+  await page.waitForTimeout(250);
+};
+
 const trySelectMuiDevice = async (page, deviceId) => {
   if (!deviceId) return;
 
@@ -294,8 +333,26 @@ const main = async () => {
   const baseUrl = String(args.baseUrl || 'http://127.0.0.1');
   const backendPort = String(args.backendPort || '5000');
   const password = String(args.password || process.env.DEMO_PASSWORD || 'Demo@123456');
+  const todayOverrideRaw = args.today ? String(args.today) : '';
   const headed = Boolean(args.headed);
   const channel = args.channel ? String(args.channel) : (process.env.PLAYWRIGHT_CHANNEL ? String(process.env.PLAYWRIGHT_CHANNEL) : '');
+  const selectedRoles = args.roles
+    ? String(args.roles)
+        .split(',')
+        .map((role) => role.trim().toLowerCase())
+        .filter(Boolean)
+    : null;
+  const selectedRoutes = args.routes
+    ? String(args.routes)
+        .split(',')
+        .map((route) => route.trim())
+        .filter(Boolean)
+    : null;
+  const skipPublic = Boolean(args.skipPublic);
+  const skipOffline = Boolean(args.skipOffline);
+  const skipIot = Boolean(args.skipIot);
+
+  const todayOverride = /^\d{4}-\d{2}-\d{2}$/.test(todayOverrideRaw) ? todayOverrideRaw : '';
 
   const outRoot = String(
     args.outDir ||
@@ -313,17 +370,16 @@ const main = async () => {
     { role: 'chw', email: 'chw1@chengeto.health' },
     { role: 'clinician', email: 'clinician1@chengeto.health' },
     { role: 'family', email: 'family1@example.com' }
-  ];
+  ].filter((entry) => (selectedRoles ? selectedRoles.includes(entry.role) : true));
 
   const publicRoutes = [
     '/login',
     '/register',
     '/forgot-password',
-    '/reset-password/demo-token',
-    '/mfa-setup'
+    '/reset-password/demo-token'
   ];
 
-  const protectedRoutes = [
+  const protectedRoutes = (selectedRoutes || [
     '/dashboard',
     '/patients',
     '/patients/new',
@@ -333,8 +389,9 @@ const main = async () => {
     '/iot/simulator',
     '/alerts',
     '/settings',
+    '/mfa-setup',
     '/profile'
-  ];
+  ]).filter((route) => (skipIot ? route !== '/iot/simulator' : true));
 
   const baseLaunchOptions = headed ? { headless: false } : { headless: true };
   const requestedLaunchOptions = channel ? { ...baseLaunchOptions, channel } : baseLaunchOptions;
@@ -360,7 +417,7 @@ const main = async () => {
   };
 
   // Public pages (logged out).
-  {
+  if (!skipPublic) {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await context.newPage();
 
@@ -467,6 +524,43 @@ const main = async () => {
     } catch {
       // ignore
     }
+
+    // Ensure we have at least one anchored record to demonstrate integrity verification (button + dialog).
+    // Only create evidence records when the run includes the relevant pages.
+    if (
+      identity.role === 'admin' &&
+      token &&
+      patientId &&
+      (protectedRoutes.includes('/checkin/history') || protectedRoutes.includes('/alerts'))
+    ) {
+      try {
+        await requestJson(`${apiBaseUrl}/checkins/manual`, 'POST', token, {
+          patientId,
+          wellnessScore: 7,
+          notes: 'Integrity verification evidence. [integrity-evidence]',
+          location: { latitude: -17.8292, longitude: 31.0534, accuracy: 15 },
+          vitals: { heartRate: 72, systolic: 120, diastolic: 80, temperature: 36.8, spo2: 98 }
+        }).catch(() => {});
+      } catch {
+        // ignore
+      }
+
+      try {
+        const createdAlert = await requestJson(`${apiBaseUrl}/alerts`, 'POST', token, {
+          patientId,
+          type: 'manual',
+          severity: 'high',
+          description: 'Integrity verification evidence. [integrity-evidence]'
+        }).catch(() => null);
+
+        const createdAlertId = createdAlert?.data?._id || createdAlert?._id || null;
+        if (createdAlertId) {
+          alertId = createdAlertId;
+        }
+      } catch {
+        // ignore
+      }
+    }
     try {
       log('Role fetch alerts', identity.role);
       const alertsPayload = await fetchJson(`${apiBaseUrl}/alerts?limit=1&page=1`, token);
@@ -496,8 +590,8 @@ const main = async () => {
 
     // Ensure Schedule page shows "today" appointments for the submission screenshots.
     // Run once as admin and mark the entries, so reruns stay deterministic.
-    if (identity.role === 'admin' && token && patientIdsForScheduling.length > 0) {
-      const todayLocal = formatLocalISODate(new Date());
+    if (identity.role === 'admin' && token && patientIdsForScheduling.length > 0 && protectedRoutes.includes('/schedule')) {
+      const todayLocal = todayOverride || formatLocalISODate(new Date());
       const seedTimes = ['08:30', '13:00', '17:30'];
 
       try {
@@ -532,7 +626,11 @@ const main = async () => {
     }
 
     for (const route of routes) {
-      const url = new URL(route, baseUrl).toString();
+      const urlObj = new URL(route, baseUrl);
+      if (route === '/schedule' && todayOverride) {
+        urlObj.searchParams.set('date', todayOverride);
+      }
+      const url = urlObj.toString();
       log('Role page', identity.role, route);
       const shotName = `${identity.role}__${sanitize(route)}.png`;
       const shotPath = path.join(outRoot, shotName);
@@ -567,6 +665,48 @@ const main = async () => {
         const state = await collectPageState(page);
         result.pages.push({ route, url, screenshot: shotName, state });
 
+        // Capture blockchain integrity verification dialogs for evidence screenshots.
+        if (route === '/checkin/history') {
+          try {
+            const viewButton = page.locator('button:has(svg[data-testid="VisibilityIcon"])').first();
+            if ((await viewButton.count().catch(() => 0)) > 0) {
+              await viewButton.click();
+              await page.getByRole('dialog').first().waitFor({ timeout: 20000 });
+              await waitForUiIdle(page);
+
+              const verifyShotName = `${identity.role}__checkin_history__integrity_verify.png`;
+              const verifyShotPath = path.join(outRoot, verifyShotName);
+              await captureIntegrityDialog(page, verifyShotPath);
+              const verifyState = await collectPageState(page).catch(() => ({}));
+              result.pages.push({
+                route: '/checkin/history (integrity verify)',
+                url,
+                screenshot: verifyShotName,
+                state: verifyState
+              });
+            }
+          } catch (error) {
+            log('Integrity capture failed', identity.role, route, String(error?.message || error));
+          }
+        }
+
+        if (route.startsWith('/alerts/') && route !== '/alerts') {
+          try {
+            const verifyShotName = `${identity.role}__alert__integrity_verify.png`;
+            const verifyShotPath = path.join(outRoot, verifyShotName);
+            await captureIntegrityDialog(page, verifyShotPath);
+            const verifyState = await collectPageState(page).catch(() => ({}));
+            result.pages.push({
+              route: `${route} (integrity verify)`,
+              url,
+              screenshot: verifyShotName,
+              state: verifyState
+            });
+          } catch (error) {
+            log('Integrity capture failed', identity.role, route, String(error?.message || error));
+          }
+        }
+
         // After IoT publish, capture Alerts again to show the generated panic alert in the UI.
         if (route === '/iot/simulator' && ['admin', 'chw'].includes(identity.role)) {
           const postUrl = new URL('/alerts', baseUrl).toString();
@@ -592,29 +732,31 @@ const main = async () => {
     }
 
     // Offline snapshots of core pages (proves offline-first caching + app shell).
-    await context.setOffline(true);
-    for (const offlineRoute of ['/checkin', '/patients', '/alerts', '/schedule']) {
-      const url = new URL(offlineRoute, baseUrl).toString();
-      const shotName = `${identity.role}__offline__${sanitize(offlineRoute)}.png`;
-      const shotPath = path.join(outRoot, shotName);
-      try {
-        log('Role offline', identity.role, offlineRoute);
-        await gotoOfflineStable(page, url);
+    if (!skipOffline) {
+      await context.setOffline(true);
+      for (const offlineRoute of ['/checkin', '/patients', '/alerts', '/schedule']) {
+        const url = new URL(offlineRoute, baseUrl).toString();
+        const shotName = `${identity.role}__offline__${sanitize(offlineRoute)}.png`;
+        const shotPath = path.join(outRoot, shotName);
+        try {
+          log('Role offline', identity.role, offlineRoute);
+          await gotoOfflineStable(page, url);
 
-        if (offlineRoute === '/schedule') {
-          await ensureScheduleDayView(page);
+          if (offlineRoute === '/schedule') {
+            await ensureScheduleDayView(page);
+          }
+
+          await page.screenshot({ path: shotPath, fullPage: true });
+          const state = await collectPageState(page);
+          result.offline.push({ route: offlineRoute, url, screenshot: shotName, state });
+        } catch (error) {
+          await page.screenshot({ path: shotPath, fullPage: true }).catch(() => {});
+          const state = await collectPageState(page).catch(() => ({}));
+          result.offline.push({ route: offlineRoute, url, screenshot: shotName, state, error: String(error?.message || error) });
         }
-
-        await page.screenshot({ path: shotPath, fullPage: true });
-        const state = await collectPageState(page);
-        result.offline.push({ route: offlineRoute, url, screenshot: shotName, state });
-      } catch (error) {
-        await page.screenshot({ path: shotPath, fullPage: true }).catch(() => {});
-        const state = await collectPageState(page).catch(() => ({}));
-        result.offline.push({ route: offlineRoute, url, screenshot: shotName, state, error: String(error?.message || error) });
       }
+      await context.setOffline(false);
     }
-    await context.setOffline(false);
 
     run.roles.push(result);
     await context.close();

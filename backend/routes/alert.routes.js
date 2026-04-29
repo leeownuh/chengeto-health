@@ -317,7 +317,7 @@ router.post('/',
 
       // Record on blockchain
       try {
-        const blockchainResult = await recordCareEvent({
+        const blockchainAnchor = {
           eventType: 'ALERT_TRIGGERED',
           patientId: patientId.toString(),
           actorId: req.user._id.toString(),
@@ -326,12 +326,19 @@ router.post('/',
             alertType: normalizedType,
             severity
           }
-        });
+        };
+
+        const blockchainResult = await recordCareEvent(blockchainAnchor);
         alert.blockchainRecord = {
+          eventId: blockchainResult.eventId,
+          eventHash: blockchainResult.eventHash,
           transactionHash: blockchainResult.transactionHash,
           blockNumber: blockchainResult.blockNumber,
           recordedAt: blockchainResult.recordedAt,
-          dataHash: blockchainResult.dataHash
+          contractAddress: blockchainResult.contractAddress,
+          dataHash: blockchainResult.dataHash,
+          anchor: blockchainAnchor,
+          mock: Boolean(blockchainResult.mock)
         };
         await alert.save();
       } catch (bcError) {
@@ -473,7 +480,7 @@ router.put('/:id/acknowledge',
 
       // Record on blockchain
       try {
-        await recordCareEvent({
+        const blockchainAnchor = {
           eventType: 'ALERT_ACKNOWLEDGED',
           patientId: alert.patient._id.toString(),
           actorId: req.user._id.toString(),
@@ -481,7 +488,21 @@ router.put('/:id/acknowledge',
             alertId: alert._id.toString(),
             responseTime: alert.acknowledgedBy.responseTime
           }
-        });
+        };
+
+        const blockchainResult = await recordCareEvent(blockchainAnchor);
+        alert.blockchainRecord = {
+          eventId: blockchainResult.eventId,
+          eventHash: blockchainResult.eventHash,
+          transactionHash: blockchainResult.transactionHash,
+          blockNumber: blockchainResult.blockNumber,
+          recordedAt: blockchainResult.recordedAt,
+          contractAddress: blockchainResult.contractAddress,
+          dataHash: blockchainResult.dataHash,
+          anchor: blockchainAnchor,
+          mock: Boolean(blockchainResult.mock)
+        };
+        await alert.save();
       } catch (bcError) {
         logger.warn('Blockchain record failed:', bcError.message);
       }
@@ -588,7 +609,7 @@ router.put('/:id/resolve',
 
       // Record on blockchain
       try {
-        await recordCareEvent({
+        const blockchainAnchor = {
           eventType: 'ALERT_RESOLVED',
           patientId: alert.patient._id.toString(),
           actorId: req.user._id.toString(),
@@ -597,7 +618,21 @@ router.put('/:id/resolve',
             outcome,
             resolutionTime: alert.resolutionTime
           }
-        });
+        };
+
+        const blockchainResult = await recordCareEvent(blockchainAnchor);
+        alert.blockchainRecord = {
+          eventId: blockchainResult.eventId,
+          eventHash: blockchainResult.eventHash,
+          transactionHash: blockchainResult.transactionHash,
+          blockNumber: blockchainResult.blockNumber,
+          recordedAt: blockchainResult.recordedAt,
+          contractAddress: blockchainResult.contractAddress,
+          dataHash: blockchainResult.dataHash,
+          anchor: blockchainAnchor,
+          mock: Boolean(blockchainResult.mock)
+        };
+        await alert.save();
       } catch (bcError) {
         logger.warn('Blockchain record failed:', bcError.message);
       }

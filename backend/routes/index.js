@@ -15,6 +15,7 @@ import dashboardRoutes from './dashboard.routes.js';
 import scheduleRoutes from './schedule.routes.js';
 import userRoutes from './user.routes.js';
 import careTransitionRoutes from './careTransition.routes.js';
+import blockchainRoutes from './blockchain.routes.js';
 
 export {
   authRoutes,
@@ -28,5 +29,6 @@ export {
   dashboardRoutes,
   scheduleRoutes,
   userRoutes,
-  careTransitionRoutes
+  careTransitionRoutes,
+  blockchainRoutes
 };

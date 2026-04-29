@@ -10,10 +10,3 @@ datasources:
     jsonData:
       timeInterval: "15s"
       httpMethod: "POST"
-
-  - name: MongoDB
-    type: mongodb
-    access: proxy
-    url: mongodb://admin:chengeto_secure_2024@mongodb:27017
-    database: chengeto_health
-    editable: false

@@ -772,7 +772,15 @@ Check-ins and critical events are recorded on the blockchain for audit integrity
 ### Verify Record
 
 ```
-GET /api/blockchain/verify/:hash
+POST /api/v1/blockchain/verify
+```
+
+**Body:**
+```json
+{
+  "entityType": "checkin",
+  "id": "6610b3b8e2f2c0a6a3e4c123"
+}
 ```
 
 **Response:**
@@ -780,10 +788,25 @@ GET /api/blockchain/verify/:hash
 {
   "success": true,
   "data": {
-    "verified": true,
-    "transactionHash": "0x1234...abcd",
-    "blockNumber": 12345678,
-    "timestamp": "2024-01-15T10:30:00.000Z"
+    "entityType": "checkin",
+    "id": "6610b3b8e2f2c0a6a3e4c123",
+    "overallStatus": "verified",
+    "offChainCheck": {
+      "checked": true,
+      "expectedDataHash": "0x...",
+      "storedDataHash": "0x...",
+      "matches": true,
+      "reason": null
+    },
+    "chainCheck": {
+      "checked": true,
+      "mode": "real",
+      "verified": true,
+      "onChainDataHash": "0x...",
+      "eventId": "ALERT_TRIGGERED:...",
+      "eventHash": "0x...",
+      "reason": null
+    }
   }
 }
 ```

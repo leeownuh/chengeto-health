@@ -53,6 +53,7 @@ import { useSocket } from '../../contexts/SocketContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { api } from '../../contexts/AuthContext';
 import { useSnackbar } from 'notistack';
+import IntegrityVerifier from '../../components/blockchain/IntegrityVerifier';
 
 // Verification method chip component
 const VerificationChip = ({ method }) => {
@@ -375,15 +376,23 @@ const CheckInDetailDialog = ({ open, onClose, checkIn }) => {
           )}
 
           {/* Blockchain Record */}
-          {checkIn.blockchainHash && (
+          {(checkIn.blockchainRecord?.transactionHash || checkIn.blockchainHash) && (
             <Grid item xs={12}>
               <Paper variant="outlined" sx={{ p: 2, bgcolor: 'grey.50' }}>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                   Blockchain Record
                 </Typography>
                 <Typography variant="body2" sx={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>
-                  {checkIn.blockchainHash}
+                  {checkIn.blockchainRecord?.transactionHash || checkIn.blockchainHash}
                 </Typography>
+                {checkIn.blockchainRecord?.dataHash && (
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                    dataHash: {String(checkIn.blockchainRecord.dataHash).slice(0, 12)}...
+                  </Typography>
+                )}
+                <Box sx={{ mt: 1.5 }}>
+                  <IntegrityVerifier entityType="checkin" id={checkIn._id} dense />
+                </Box>
               </Paper>
             </Grid>
           )}
