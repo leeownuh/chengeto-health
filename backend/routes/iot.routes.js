@@ -13,6 +13,7 @@ import Patient from '../models/Patient.js';
 import Alert from '../models/Alert.js';
 import AuditLog from '../models/AuditLog.js';
 import { authenticate, authorize, authenticateDevice } from '../middleware/auth.middleware.js';
+import { iotRateLimiter } from '../middleware/rateLimit.middleware.js';
 import { triggerAlertEscalation } from '../services/escalation.service.js';
 import logger from '../config/logger.js';
 
@@ -128,6 +129,7 @@ function buildRealtimeVitals(telemetry) {
  * @access  Private (Device authenticated)
  */
 router.post('/telemetry',
+  iotRateLimiter,
   // Support both device and user authentication
   async (req, res, next) => {
     // Check for device auth header

@@ -1,0 +1,15 @@
+services:
+  # Laptop-friendly ports (avoid binding to privileged port 80 on Windows).
+  frontend:
+    ports:
+      - "8080:80"
+
+  # Optional: expose Grafana/Prometheus on non-default ports if you enable the monitoring profile.
+  prometheus:
+    ports:
+      - "9090:9090"
+
+  grafana:
+    ports:
+      - "3000:3000"
+

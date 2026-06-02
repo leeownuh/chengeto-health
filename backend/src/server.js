@@ -13,6 +13,7 @@ dotenv.config();
 
 import express from 'express';
 import http from 'http';
+import crypto from 'crypto';
 import { Server as SocketIOServer } from 'socket.io';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -96,6 +97,14 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Device-Id']
 };
 
+// Attach a request ID early so logs, clients, and future tracing can share a common handle.
+app.use((req, res, next) => {
+  const requestId = req.headers['x-request-id'] || crypto.randomUUID();
+  req.requestId = String(requestId);
+  res.setHeader('X-Request-Id', req.requestId);
+  next();
+});
+
 // Initialize Socket.IO
 const io = new SocketIOServer(server, {
   cors: {
@@ -149,7 +158,8 @@ app.use(compression());
 app.use(metricsMiddleware);
 
 // HTTP request logging
-app.use(morgan('combined', { stream: morganStream }));
+morgan.token('request-id', (req) => req.requestId || '-');
+app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" request_id=:request-id', { stream: morganStream }));
 
 // Rate limiting
 app.use('/api/', rateLimiter);

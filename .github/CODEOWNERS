@@ -1,0 +1,17 @@
+* @leona
+
+.github/workflows/ @leona
+.github/settings.yml @leona
+render.yaml @leona
+infra/ @leona
+backend/middleware/ @leona
+backend/routes/ @leona
+backend/src/server.js @leona
+backend/Dockerfile @leona
+frontend/Dockerfile @leona
+docs/DEPLOYMENT_GUIDE.md @leona
+docs/RENDER_DEPLOYMENT.md @leona
+docs/RENDER_RELEASE_RUNBOOK.md @leona
+docs/SECRET_ROTATION_RUNBOOK.md @leona
+docs/BACKUP_AND_DR_POLICY.md @leona
+docs/LOG_RETENTION_POLICY.md @leona

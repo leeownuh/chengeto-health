@@ -1,0 +1,45 @@
+name: SBOM
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: sbom-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Generate SBOMs
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: backend
+          - project: frontend
+          - project: blockchain
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+      - run: npm ci --legacy-peer-deps
+      - name: Generate CycloneDX SBOM
+        run: npx @cyclonedx/cyclonedx-npm --output-file ../${{ matrix.project }}-sbom.json --of JSON
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.project }}-sbom
+          path: ${{ matrix.project }}-sbom.json
+          retention-days: 30
+          if-no-files-found: error

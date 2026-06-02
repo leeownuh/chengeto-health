@@ -1,0 +1,16 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: default
+  group_by: ['alertname', 'job', 'severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+receivers:
+  - name: default
+    webhook_configs:
+      # Provide ALERTMANAGER_DEFAULT_WEBHOOK_URL through the environment.
+      - url: ${ALERTMANAGER_DEFAULT_WEBHOOK_URL}
+        send_resolved: true

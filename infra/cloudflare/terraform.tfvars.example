@@ -1,0 +1,8 @@
+cloudflare_api_token = "replace_me"
+zone_id              = "replace_me"
+zone_name            = "chengeto.health"
+frontend_hostname    = "chengeto.health"
+api_hostname         = "api.chengeto.health"
+frontend_origin      = "chengeto-frontend.onrender.com"
+api_origin           = "chengeto-backend.onrender.com"
+enable_bot_fight_mode = false

@@ -16,7 +16,7 @@ import CheckIn from '../models/CheckIn.js';
 import Alert from '../models/Alert.js';
 import AuditLog, { AUDIT_ACTIONS, AUDIT_RESULT } from '../models/AuditLog.js';
 import { authenticate, authorize, checkDeviceTrust } from '../middleware/auth.middleware.js';
-import { authLimiter, sensitiveLimiter } from '../middleware/rateLimit.middleware.js';
+import { authLimiter, sensitiveLimiter, passwordResetLimiter } from '../middleware/rateLimit.middleware.js';
 import logger from '../config/logger.js';
 
 const router = express.Router();
@@ -757,7 +757,7 @@ router.post('/mfa/disable',
  * @access  Public
  */
 router.post('/forgot-password',
-  authLimiter,
+  passwordResetLimiter,
   [body('email').isEmail().normalizeEmail().withMessage('Valid email required')],
   async (req, res) => {
     try {
@@ -862,7 +862,7 @@ router.get('/reset-password/:token',
  * @access  Public
  */
 router.post('/reset-password',
-  sensitiveLimiter,
+  passwordResetLimiter,
   [
     body('token').notEmpty().withMessage('Reset token required'),
     body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters')

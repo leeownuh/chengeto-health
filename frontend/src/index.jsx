@@ -8,6 +8,7 @@ import axios from 'axios';
 import App from './App';
 import './index.css';
 import { resolveApiUrl } from './utils/runtimeUrls';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 const legacyApiBaseUrl = resolveApiUrl().replace(/\/api\/v1\/?$/, '');
 
@@ -29,6 +30,8 @@ axios.interceptors.request.use((config) => {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </React.StrictMode>
 );

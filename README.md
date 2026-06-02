@@ -17,7 +17,7 @@ Run the full stack locally:
 
 Then open:
 
-- Frontend: `http://127.0.0.1:80`
+- Frontend: `http://127.0.0.1:8081`
 - API health: `http://127.0.0.1:5000/health`
 
 If you need to (re)seed demo data:
@@ -61,7 +61,7 @@ Admin dashboard:
 
 ![Admin Dashboard](docs/ui-snapshots/latest/admin__dashboard.png)
 
-Schedule management (DAY view, populated for **25/04/2026**):
+Schedule management (DAY view, populated for **14/05/2026**):
 
 ![Admin Schedule Day View](docs/ui-snapshots/latest/admin__schedule.png)
 
@@ -86,4 +86,3 @@ Software testing results (full-page):
 - `docs/security-audit.md`
 - `docs/monitoring-ops.md`
 - `docs/ui-snapshots.md`
-

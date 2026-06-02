@@ -2,6 +2,8 @@
  * Jest Test Setup
  */
 
+let mongoServer;
+
 // Suppress console logs in tests (comment out for debugging)
 // global.console = {
 //   ...console,
@@ -19,8 +21,27 @@ global.testUtils = {
   sleep: (ms) => new Promise(resolve => setTimeout(resolve, ms)),
 };
 
+beforeAll(async () => {
+  if (!process.env.MONGODB_URI_TEST || process.env.MONGODB_URI_TEST.includes('localhost:27017')) {
+    try {
+      const { MongoMemoryServer } = await import('mongodb-memory-server');
+      mongoServer = await MongoMemoryServer.create({
+        instance: {
+          dbName: 'chengeto_test'
+        }
+      });
+      process.env.MONGODB_URI_TEST = mongoServer.getUri('chengeto_test');
+    } catch (error) {
+      console.warn(`MongoMemoryServer unavailable, falling back to MONGODB_URI_TEST=${process.env.MONGODB_URI_TEST}.`, error.message);
+    }
+  }
+});
+
 // Clean up after all tests
 afterAll(async () => {
+  if (mongoServer) {
+    await mongoServer.stop();
+  }
   // Close any open handles
   await new Promise(resolve => setTimeout(resolve, 500));
 });

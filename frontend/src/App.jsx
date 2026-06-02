@@ -17,6 +17,7 @@ import { ThemeModeProvider } from './contexts/ThemeModeContext';
 // Layout components
 import MainLayout from './components/layout/MainLayout';
 import AuthLayout from './components/layout/AuthLayout';
+import MarketingLayout from './components/layout/MarketingLayout';
 
 // Auth pages
 import LoginPage from './pages/auth/LoginPage';
@@ -53,6 +54,17 @@ import ProfilePage from './pages/settings/ProfilePage';
 
 // IoT pages
 import DeviceSimulatorPage from './pages/iot/DeviceSimulatorPage';
+
+// Marketing pages
+import HomePage from './pages/marketing/HomePage';
+import PricingPage from './pages/marketing/PricingPage';
+import HowItWorksPage from './pages/marketing/HowItWorksPage';
+import DiasporaPage from './pages/marketing/DiasporaPage';
+import EldersPage from './pages/marketing/EldersPage';
+import CareersPage from './pages/marketing/CareersPage';
+import FAQPage from './pages/marketing/FAQPage';
+import ContactPage from './pages/marketing/ContactPage';
+import NotFoundPage from './pages/marketing/NotFoundPage';
 
 // Guards
 import PrivateRoute from './components/guards/PrivateRoute';
@@ -159,6 +171,18 @@ function App() {
             <SocketProvider>
               <Router>
                 <Routes>
+                  {/* Public marketing routes */}
+                  <Route path="/" element={<MarketingLayout />}>
+                    <Route index element={<HomePage />} />
+                    <Route path="pricing" element={<PricingPage />} />
+                    <Route path="how-it-works" element={<HowItWorksPage />} />
+                    <Route path="diaspora" element={<DiasporaPage />} />
+                    <Route path="elders" element={<EldersPage />} />
+                    <Route path="careers" element={<CareersPage />} />
+                    <Route path="faq" element={<FAQPage />} />
+                    <Route path="contact" element={<ContactPage />} />
+                  </Route>
+
                   {/* Public routes */}
                   <Route element={<AuthLayout />}>
                     <Route path="/login" element={<LoginPage />} />
@@ -172,7 +196,6 @@ function App() {
                   <Route element={<PrivateRoute />}>
                     <Route element={<MainLayout />}>
                       {/* Dashboard routes */}
-                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
                       <Route
                         path="/dashboard"
                         element={
@@ -223,8 +246,10 @@ function App() {
                     </Route>
                   </Route>
 
-                  {/* Catch-all redirect */}
-                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  {/* Catch-all */}
+                  <Route path="*" element={<MarketingLayout />}>
+                    <Route index element={<NotFoundPage />} />
+                  </Route>
                 </Routes>
 
                 <Snackbar

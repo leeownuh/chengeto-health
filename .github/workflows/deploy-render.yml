@@ -1,0 +1,58 @@
+name: Deploy Render
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      deploy_backend:
+        description: Deploy backend
+        required: true
+        type: boolean
+        default: true
+      deploy_frontend:
+        description: Deploy frontend
+        required: true
+        type: boolean
+        default: true
+
+concurrency:
+  group: deploy-render-${{ github.event.inputs.environment }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    if: ${{ github.event.inputs.deploy_backend == 'true' }}
+    name: Deploy backend
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Trigger backend deploy hook
+        shell: bash
+        run: curl --fail --silent --show-error --request POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK_URL }}"
+      - name: Verify backend health
+        shell: bash
+        run: curl --fail --silent --show-error "${{ vars.BACKEND_HEALTHCHECK_URL }}"
+
+  frontend:
+    name: Deploy frontend
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    needs:
+      - backend
+    if: ${{ always() && github.event.inputs.deploy_frontend == 'true' && (needs.backend.result == 'success' || needs.backend.result == 'skipped') }}
+    steps:
+      - name: Trigger frontend deploy hook
+        shell: bash
+        run: curl --fail --silent --show-error --request POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK_URL }}"
+      - name: Verify frontend health
+        shell: bash
+        run: curl --fail --silent --show-error "${{ vars.FRONTEND_HEALTHCHECK_URL }}"
