@@ -4,15 +4,15 @@
  */
 
 import aedes from 'aedes';
-import net from 'net';
-import ws from 'websocket-stream';
-import http from 'http';
+import { createRequire } from 'module';
 import { logger } from './logger.js';
 import IoTDevice from '../models/IoTDevice.js';
 
 let mqttBroker = null;
 let mqttServer = null;
 let wsServer = null;
+const require = createRequire(import.meta.url);
+const { createServer: createAedesServer } = require('aedes-server-factory');
 
 // Aedes instance with persistence
 const aedesInstance = aedes({
@@ -158,22 +158,25 @@ aedesInstance.on('error', (error) => {
 export const setupMQTTBroker = () => {
   return new Promise((resolve, reject) => {
     try {
-      // Create TCP server
-      mqttServer = net.createServer(aedesInstance.handle);
-      
       const mqttPort = parseInt(process.env.MQTT_PORT) || 1883;
-      
+      const wsPort = parseInt(process.env.MQTT_WS_PORT) || 8083;
+
+      // Plain MQTT broker
+      mqttServer = createAedesServer(aedesInstance);
       mqttServer.listen(mqttPort, () => {
         logger.info(`MQTT broker listening on port ${mqttPort}`);
-        
-        // Create WebSocket server for browser clients
-        wsServer = http.createServer();
-        ws.createServer({ server: wsServer }, aedesInstance.handle);
-        
-        const wsPort = parseInt(process.env.MQTT_WS_PORT) || 8083;
+
+        // MQTT over WebSocket for browser clients
+        wsServer = createAedesServer(aedesInstance, {
+          ws: true
+        });
+        wsServer.on('error', (error) => {
+          logger.error('MQTT WebSocket server error', { error: error.message });
+          reject(error);
+        });
         wsServer.listen(wsPort, () => {
           logger.info(`MQTT WebSocket server listening on port ${wsPort}`);
-          
+
           mqttBroker = aedesInstance;
           resolve(aedesInstance);
         });
