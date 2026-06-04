@@ -22,7 +22,14 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY --from=build /app /app
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/src ./src
+COPY --from=build /app/config ./config
+COPY --from=build /app/routes ./routes
+COPY --from=build /app/middleware ./middleware
+COPY --from=build /app/models ./models
+COPY --from=build /app/services ./services
+COPY --from=build /app/utils ./utils
 
 RUN mkdir -p logs uploads && \
     addgroup -g 1001 -S nodejs && \
