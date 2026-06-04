@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-alpine3.22 AS build
 
 WORKDIR /app
 
@@ -16,7 +16,16 @@ COPY . .
 
 RUN mkdir -p logs uploads
 
-RUN addgroup -g 1001 -S nodejs && \
+FROM node:18-alpine3.22
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY --from=build /app /app
+
+RUN mkdir -p logs uploads && \
+    addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 && \
     chown -R nodejs:nodejs /app
 
