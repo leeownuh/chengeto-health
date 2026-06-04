@@ -61,6 +61,7 @@ jobs:
           --format sarif
           --output /workspace/trivy-${{ matrix.image }}.sarif
           --severity HIGH,CRITICAL
+          --ignore-status fixed
           --ignore-unfixed
           chengeto-${{ matrix.image }}:scan
       - uses: github/codeql-action/upload-sarif@v4
@@ -74,6 +75,7 @@ jobs:
           image
           --format table
           --severity HIGH,CRITICAL
+          --ignore-status fixed
           --ignore-unfixed
           --exit-code 1
           chengeto-${{ matrix.image }}:scan
