@@ -1,4 +1,4 @@
-FROM node:18-alpine3.22 AS build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ COPY . .
 
 RUN mkdir -p logs uploads
 
-FROM node:18-alpine3.22
+FROM node:22-alpine
 
 WORKDIR /app
 
