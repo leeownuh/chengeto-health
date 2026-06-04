@@ -25,7 +25,7 @@ jobs:
       - run: npm test -- --run
       - run: npm run build
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ success() }}
         with:
           name: frontend-dist
           path: frontend/dist
