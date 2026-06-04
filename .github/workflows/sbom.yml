@@ -36,7 +36,12 @@ jobs:
           cache-dependency-path: ${{ matrix.project }}/package-lock.json
       - run: npm ci --legacy-peer-deps
       - name: Generate CycloneDX SBOM
-        run: npx @cyclonedx/cyclonedx-npm --output-file ../${{ matrix.project }}-sbom.json --output-format JSON
+        run: >
+          npx @cyclonedx/cyclonedx-npm
+          --output-file ../${{ matrix.project }}-sbom.json
+          --output-format JSON
+          --ignore-npm-errors
+          --package-lock-only
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.project }}-sbom
