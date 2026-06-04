@@ -4,7 +4,6 @@
  */
 
 import express from 'express';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import speakeasy from 'speakeasy';
@@ -133,14 +132,10 @@ router.post('/register',
         });
       }
 
-      // Hash password
-      const salt = await bcrypt.genSalt(12);
-      const hashedPassword = await bcrypt.hash(password, salt);
-
       // Create user
       const user = new User({
         email,
-        password: hashedPassword,
+        password,
         firstName,
         lastName,
         role,
@@ -886,8 +881,7 @@ router.post('/reset-password',
       }
 
       // Hash new password
-      const salt = await bcrypt.genSalt(12);
-      user.password = await bcrypt.hash(password, salt);
+      user.password = password;
       user.passwordResetToken = undefined;
       user.passwordResetExpires = undefined;
       user.loginAttempts = 0;
@@ -1265,8 +1259,7 @@ router.put('/password',
       }
 
       // Hash and save new password
-      const salt = await bcrypt.genSalt(12);
-      user.password = await bcrypt.hash(newPassword, salt);
+      user.password = newPassword;
       await user.save();
 
       // Create audit log
