@@ -60,9 +60,11 @@ import { initializeSocketService } from '../services/socket.service.js';
 import { initializeEscalationService } from '../services/escalation.service.js';
 import { initializeBlockchainService } from '../services/blockchain.service.js';
 import { initializeMqttIngestion } from '../services/mqttIngestion.service.js';
+import { getAuthDataRepairOptionsFromEnv, runAuthDataRepair } from '../utils/authDataRepair.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const authDataRepairOptions = getAuthDataRepairOptionsFromEnv();
 
 const app = express();
 const server = http.createServer(app);
@@ -274,6 +276,13 @@ const startServer = async () => {
     // Connect to MongoDB
     await connectDatabase();
     logger.info('MongoDB connected successfully');
+
+    if (authDataRepairOptions.mode !== 'off') {
+      logger.warn('Auth data repair requested at startup');
+
+      const repairResult = await runAuthDataRepair(authDataRepairOptions);
+      logger.info(`Auth data repair completed in ${repairResult.report.dryRun ? 'dry-run' : 'apply'} mode`);
+    }
 
     // Start app-level Prometheus gauges (patients/alerts/checkins/devices/users).
     initializeAppMetrics();
