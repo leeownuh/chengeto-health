@@ -125,7 +125,12 @@ router.post('/register',
       } = req.body;
 
       // Check if user already exists
-      const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
+      const existingUserFilters = [{ email }];
+      if (phone) {
+        existingUserFilters.push({ phone });
+      }
+
+      const existingUser = await User.findOne({ $or: existingUserFilters });
       if (existingUser) {
         return res.status(409).json({
           success: false,
@@ -161,21 +166,33 @@ router.post('/register',
 
       await user.save();
 
-      // Create audit log
-      await AuditLog.create({
-        action: 'USER_REGISTERED',
+      // Registration should not fail if audit persistence has schema drift.
+      await createAuditLogSafe({
+        action: AUDIT_ACTIONS.USER_CREATE,
+        category: 'user_management',
+        result: AUDIT_RESULT.SUCCESS,
         actor: {
           userId: user._id,
           email: user.email,
           role: user.role
         },
+        target: {
+          type: 'user',
+          id: user._id,
+          model: 'User',
+          description: user.email
+        },
+        request: {
+          method: req.method,
+          endpoint: req.originalUrl,
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent']
+        },
         details: {
           message: `New user registered: ${email}`,
           role,
           registrationMethod: 'self'
-        },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent']
+        }
       });
 
       logger.info(`User registered: ${email} (${role})`);
