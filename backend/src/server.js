@@ -286,16 +286,7 @@ const startServer = async () => {
       });
 
       const repairResult = await runAuthDataRepair(authDataRepairOptions);
-      logger.info('Auth data repair report', repairResult.report);
-
-      if (repairResult.applied) {
-        logger.info('Auth data repair applied', {
-          matchedUsers: repairResult.applied.matchedUsers,
-          modifiedUsers: repairResult.applied.modifiedUsers,
-          demoPasswordsResetCount: repairResult.applied.demoPasswordsReset.length,
-          indexesSynced: Boolean(repairResult.applied.indexSyncResult)
-        });
-      }
+      logger.info(`Auth data repair completed in ${repairResult.report.dryRun ? 'dry-run' : 'apply'} mode`);
     }
 
     // Start app-level Prometheus gauges (patients/alerts/checkins/devices/users).
