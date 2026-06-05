@@ -289,7 +289,12 @@ const startServer = async () => {
       logger.info('Auth data repair report', repairResult.report);
 
       if (repairResult.applied) {
-        logger.info('Auth data repair applied', repairResult.applied);
+        logger.info('Auth data repair applied', {
+          matchedUsers: repairResult.applied.matchedUsers,
+          modifiedUsers: repairResult.applied.modifiedUsers,
+          demoPasswordsResetCount: repairResult.applied.demoPasswordsReset.length,
+          indexesSynced: Boolean(repairResult.applied.indexSyncResult)
+        });
       }
     }
 
