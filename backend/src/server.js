@@ -61,10 +61,12 @@ import { initializeEscalationService } from '../services/escalation.service.js';
 import { initializeBlockchainService } from '../services/blockchain.service.js';
 import { initializeMqttIngestion } from '../services/mqttIngestion.service.js';
 import { getAuthDataRepairOptionsFromEnv, runAuthDataRepair } from '../utils/authDataRepair.js';
+import { getDemoAccountReseedOptionsFromEnv, reseedDemoAccounts } from '../utils/demoAccountReseed.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const authDataRepairOptions = getAuthDataRepairOptionsFromEnv();
+const demoAccountReseedOptions = getDemoAccountReseedOptionsFromEnv();
 
 const app = express();
 const server = http.createServer(app);
@@ -282,6 +284,13 @@ const startServer = async () => {
 
       const repairResult = await runAuthDataRepair(authDataRepairOptions);
       logger.info(`Auth data repair completed in ${repairResult.report.dryRun ? 'dry-run' : 'apply'} mode`);
+    }
+
+    if (demoAccountReseedOptions.mode !== 'off') {
+      logger.warn('Demo account reseed requested at startup');
+
+      const reseedResult = await reseedDemoAccounts(demoAccountReseedOptions);
+      logger.info(`Demo account reseed completed in ${reseedResult.report.dryRun ? 'dry-run' : 'apply'} mode`);
     }
 
     // Start app-level Prometheus gauges (patients/alerts/checkins/devices/users).
