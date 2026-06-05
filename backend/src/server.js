@@ -278,12 +278,7 @@ const startServer = async () => {
     logger.info('MongoDB connected successfully');
 
     if (authDataRepairOptions.mode !== 'off') {
-      logger.warn('Auth data repair requested at startup', {
-        mode: authDataRepairOptions.mode,
-        resetDemoPasswords: authDataRepairOptions.resetDemoPasswords,
-        syncIndexes: authDataRepairOptions.syncIndexes,
-        unsetLegacyFields: authDataRepairOptions.unsetLegacyFields
-      });
+      logger.warn('Auth data repair requested at startup');
 
       const repairResult = await runAuthDataRepair(authDataRepairOptions);
       logger.info(`Auth data repair completed in ${repairResult.report.dryRun ? 'dry-run' : 'apply'} mode`);
