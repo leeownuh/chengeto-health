@@ -10,7 +10,8 @@
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage --runInBand",
     "test:watch": "jest --watch",
     "lint": "eslint \"src/**/*.js\"",
-    "seed": "node scripts/seedDatabase.js"
+    "seed": "node scripts/seedDatabase.js",
+    "repair:auth-data": "node scripts/repairAuthData.js"
   },
   "keywords": [
     "healthcare",
