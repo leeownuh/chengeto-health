@@ -17,6 +17,7 @@ import AuditLog, { AUDIT_ACTIONS, AUDIT_RESULT } from '../models/AuditLog.js';
 import { authenticate, authorize, checkDeviceTrust } from '../middleware/auth.middleware.js';
 import { authLimiter, sensitiveLimiter, passwordResetLimiter } from '../middleware/rateLimit.middleware.js';
 import logger from '../config/logger.js';
+import { USER_STATUS } from '../models/User.js';
 
 const router = express.Router();
 
@@ -143,8 +144,8 @@ router.post('/register',
         nationalId,
         location,
         healthFacility: healthFacility || assignedFacility,
-        isEmailVerified: false,
-        isActive: true,
+        emailVerified: false,
+        status: USER_STATUS.ACTIVE,
         mfaEnabled: false,
         loginAttempts: 0,
         lockUntil: null
@@ -1317,7 +1318,10 @@ router.post('/verify-email',
         });
       }
 
-      user.isEmailVerified = true;
+      user.emailVerified = true;
+      if (user.status === USER_STATUS.PENDING) {
+        user.status = USER_STATUS.ACTIVE;
+      }
       user.emailVerificationToken = undefined;
       user.emailVerificationExpires = undefined;
       await user.save();
