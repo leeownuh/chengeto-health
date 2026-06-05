@@ -11,7 +11,8 @@
     "test:watch": "jest --watch",
     "lint": "eslint \"src/**/*.js\"",
     "seed": "node scripts/seedDatabase.js",
-    "repair:auth-data": "node scripts/repairAuthData.js"
+    "repair:auth-data": "node scripts/repairAuthData.js",
+    "reseed:demo-accounts": "node scripts/reseedDemoAccounts.js"
   },
   "keywords": [
     "healthcare",
