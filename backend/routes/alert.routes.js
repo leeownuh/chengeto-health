@@ -10,11 +10,14 @@ import Patient from '../models/Patient.js';
 import User from '../models/User.js';
 import AuditLog, { AUDIT_ACTIONS, AUDIT_RESULT } from '../models/AuditLog.js';
 import { authenticate, authorize } from '../middleware/auth.middleware.js';
+import { rateLimiter } from '../middleware/rateLimit.middleware.js';
 import { escalateAlert } from '../services/escalation.service.js';
 import { recordCareEvent } from '../services/blockchain.service.js';
 import logger from '../config/logger.js';
 
 const router = express.Router();
+
+router.use(rateLimiter);
 
 /**
  * @route   GET /api/alerts

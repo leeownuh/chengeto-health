@@ -3,6 +3,7 @@ import { body, param, validationResult } from 'express-validator';
 import Alert from '../models/Alert.js';
 import Patient from '../models/Patient.js';
 import { authenticate, authorize } from '../middleware/auth.middleware.js';
+import { rateLimiter } from '../middleware/rateLimit.middleware.js';
 import { recordCareEvent } from '../services/blockchain.service.js';
 import {
   ACTIVE_ALERT_STATUSES,
@@ -15,6 +16,8 @@ import {
 } from './compat.utils.js';
 
 const router = express.Router();
+
+router.use(rateLimiter);
 
 const persistBlockchainAnchor = async (alert, req, eventType, metadata = {}, escalationLevel) => {
   try {

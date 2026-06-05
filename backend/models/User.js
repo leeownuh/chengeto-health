@@ -313,7 +313,8 @@ userSchema.pre('save', async function(next) {
     this.password = await bcrypt.hash(this.password, salt);
     
     if (!this.isNew) {
-      this.passwordChangedAt = new Date();
+      // Backdate slightly so tokens minted in the same second are still invalidated.
+      this.passwordChangedAt = new Date(Date.now() - 1000);
     }
     
     next();
@@ -342,6 +343,10 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
     return JWTTimestamp < changedTimestamp;
   }
   return false;
+};
+
+userSchema.methods.getPasswordStateVersion = function() {
+  return this.passwordChangedAt instanceof Date ? this.passwordChangedAt.getTime() : 0;
 };
 
 // Method to generate password reset token

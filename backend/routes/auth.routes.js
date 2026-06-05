@@ -15,7 +15,7 @@ import CheckIn from '../models/CheckIn.js';
 import Alert from '../models/Alert.js';
 import AuditLog, { AUDIT_ACTIONS, AUDIT_RESULT } from '../models/AuditLog.js';
 import { authenticate, authorize, checkDeviceTrust } from '../middleware/auth.middleware.js';
-import { authLimiter, sensitiveLimiter, passwordResetLimiter } from '../middleware/rateLimit.middleware.js';
+import { authLimiter, rateLimiter, sensitiveLimiter, passwordResetLimiter } from '../middleware/rateLimit.middleware.js';
 import logger from '../config/logger.js';
 import { USER_STATUS } from '../models/User.js';
 
@@ -37,17 +37,23 @@ const getQueryLimit = (value, fallback = DEFAULT_ACTIVITY_LIMIT) => {
  * Generate JWT tokens
  */
 function generateTokens(user, { mfaVerified = false } = {}) {
+  const passwordStateVersion = user.getPasswordStateVersion();
   const payload = {
     userId: user._id,
     email: user.email,
     role: user.role,
     permissions: user.permissions,
-    mfaVerified: Boolean(mfaVerified) || !user.mfaEnabled
+    mfaVerified: Boolean(mfaVerified) || !user.mfaEnabled,
+    passwordStateVersion
   };
 
   const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
   const refreshToken = jwt.sign(
-    { userId: user._id, mfaVerified: payload.mfaVerified },
+    {
+      userId: user._id,
+      mfaVerified: payload.mfaVerified,
+      passwordStateVersion
+    },
     JWT_REFRESH_SECRET,
     { expiresIn: JWT_REFRESH_EXPIRES_IN }
   );
@@ -81,7 +87,7 @@ async function createAuditLogSafe(payload) {
     await AuditLog.log(payload);
   } catch (error) {
     logger.warn('Audit log creation failed', {
-      action: payload.action,
+      category: payload.category,
       error: error.message
     });
   }
@@ -433,6 +439,8 @@ router.post('/login',
  * @desc    Refresh access token
  * @access  Public (with refresh token)
  */
+router.use(rateLimiter);
+
 router.post('/refresh', async (req, res) => {
   try {
     const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
@@ -448,8 +456,22 @@ router.post('/refresh', async (req, res) => {
     const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
     
     // Find user
-    const user = await User.findById(decoded.userId);
+    const user = await User.findById(decoded.userId).select('+passwordChangedAt');
     if (!user || user.status !== 'active') {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid or expired refresh token'
+      });
+    }
+
+    const currentPasswordStateVersion = user.getPasswordStateVersion();
+    const tokenPasswordStateVersion =
+      typeof decoded?.passwordStateVersion === 'number' ? decoded.passwordStateVersion : null;
+
+    if (
+      (tokenPasswordStateVersion !== null && tokenPasswordStateVersion !== currentPasswordStateVersion) ||
+      (tokenPasswordStateVersion === null && user.changedPasswordAfter(decoded.iat))
+    ) {
       return res.status(401).json({
         success: false,
         message: 'Invalid or expired refresh token'
@@ -792,18 +814,31 @@ router.post('/forgot-password',
       await user.save();
 
       // Create audit log
-      await AuditLog.create({
-        action: 'PASSWORD_RESET_REQUESTED',
+      await createAuditLogSafe({
+        action: AUDIT_ACTIONS.PASSWORD_CHANGE,
+        category: 'authentication',
+        result: AUDIT_RESULT.SUCCESS,
         actor: {
           userId: user._id,
           email: user.email,
           role: user.role
         },
-        details: {
-          message: 'Password reset requested'
+        target: {
+          type: 'user',
+          id: user._id,
+          model: 'User',
+          description: user.email
         },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent']
+        request: {
+          method: req.method,
+          endpoint: req.originalUrl,
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent']
+        },
+        details: {
+          message: 'Password reset requested',
+          stage: 'request'
+        }
       });
 
       logger.info(`Password reset requested for: ${email}`);
@@ -907,18 +942,31 @@ router.post('/reset-password',
       await user.save();
 
       // Create audit log
-      await AuditLog.create({
-        action: 'PASSWORD_RESET_COMPLETED',
+      await createAuditLogSafe({
+        action: AUDIT_ACTIONS.PASSWORD_CHANGE,
+        category: 'authentication',
+        result: AUDIT_RESULT.SUCCESS,
         actor: {
           userId: user._id,
           email: user.email,
           role: user.role
         },
-        details: {
-          message: 'Password reset completed'
+        target: {
+          type: 'user',
+          id: user._id,
+          model: 'User',
+          description: user.email
         },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent']
+        request: {
+          method: req.method,
+          endpoint: req.originalUrl,
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent']
+        },
+        details: {
+          message: 'Password reset completed',
+          stage: 'completion'
+        }
       });
 
       logger.info(`Password reset completed for: ${user.email}`);
@@ -1281,18 +1329,30 @@ router.put('/password',
       await user.save();
 
       // Create audit log
-      await AuditLog.create({
-        action: 'PASSWORD_CHANGED',
+      await createAuditLogSafe({
+        action: AUDIT_ACTIONS.PASSWORD_CHANGE,
+        category: 'authentication',
+        result: AUDIT_RESULT.SUCCESS,
         actor: {
           userId: user._id,
           email: user.email,
           role: user.role
         },
+        target: {
+          type: 'user',
+          id: user._id,
+          model: 'User',
+          description: user.email
+        },
+        request: {
+          method: req.method,
+          endpoint: req.originalUrl,
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent']
+        },
         details: {
           message: 'Password changed'
-        },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent']
+        }
       });
 
       res.json({

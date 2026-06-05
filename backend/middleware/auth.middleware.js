@@ -33,7 +33,7 @@ export const protect = asyncHandler(async (req, res, next) => {
     const userId = decoded.id || decoded.userId;
 
     // Check if user still exists
-    const currentUser = await User.findById(userId).select('+password');
+    const currentUser = await User.findById(userId).select('+password +passwordChangedAt');
     
     if (!currentUser) {
       return next(new UnauthorizedError('The user belonging to this token no longer exists.'));
@@ -45,7 +45,14 @@ export const protect = asyncHandler(async (req, res, next) => {
     }
 
     // Check if user changed password after token was issued
-    if (currentUser.changedPasswordAfter(decoded.iat)) {
+    const currentPasswordStateVersion = currentUser.getPasswordStateVersion();
+    const tokenPasswordStateVersion =
+      typeof decoded?.passwordStateVersion === 'number' ? decoded.passwordStateVersion : null;
+
+    if (
+      (tokenPasswordStateVersion !== null && tokenPasswordStateVersion !== currentPasswordStateVersion) ||
+      (tokenPasswordStateVersion === null && currentUser.changedPasswordAfter(decoded.iat))
+    ) {
       return next(new UnauthorizedError('User recently changed password. Please log in again.'));
     }
 
