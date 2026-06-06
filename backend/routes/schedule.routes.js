@@ -6,6 +6,7 @@ import AuditLog, { AUDIT_ACTIONS, AUDIT_RESULT } from '../models/AuditLog.js';
 import { authenticate, authorize } from '../middleware/auth.middleware.js';
 import { buildPatientAccessMatch, parseLimit } from './compat.utils.js';
 import { buildWorkflowSnapshot } from '../utils/workflowTasks.js';
+import { materializePatient } from '../utils/patientPresentation.js';
 
 const router = express.Router();
 
@@ -96,6 +97,7 @@ async function logScheduleAudit(req, action, targetId, details = {}, changes = {
 }
 
 function mapSchedule(schedule, patient, statusOverride = null) {
+  const presentedPatient = patient ? materializePatient(patient) : null;
   const window = schedule.checkinWindows?.[0];
   const titleInstruction = schedule.specialInstructions?.find(
     (instruction) => instruction.type === 'title'
@@ -106,18 +108,18 @@ function mapSchedule(schedule, patient, statusOverride = null) {
 
   const fallbackTitle =
     schedule.title ||
-    `${patient?.firstName || 'Patient'} ${patient?.lastName || ''} ${window?.name || 'check-in'}`.trim();
+    `${presentedPatient?.firstName || 'Patient'} ${presentedPatient?.lastName || ''} ${window?.name || 'check-in'}`.trim();
 
   return {
     _id: schedule._id,
     scheduleId: schedule.scheduleId,
     title:
       titleInstruction?.instruction ?? fallbackTitle,
-    patient: patient
+    patient: presentedPatient
       ? {
-          _id: patient._id,
-          name: `${patient.firstName} ${patient.lastName}`.trim(),
-          patientId: patient.patientId
+          _id: presentedPatient._id,
+          name: `${presentedPatient.firstName} ${presentedPatient.lastName}`.trim(),
+          patientId: presentedPatient.patientId
         }
       : null,
     patientId: patient?._id,
