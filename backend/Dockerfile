@@ -29,6 +29,7 @@ COPY --from=build /app/routes ./routes
 COPY --from=build /app/middleware ./middleware
 COPY --from=build /app/models ./models
 COPY --from=build /app/services ./services
+COPY --from=build /app/scripts ./scripts
 COPY --from=build /app/utils ./utils
 
 RUN mkdir -p logs uploads && \
