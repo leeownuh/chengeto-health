@@ -806,7 +806,7 @@ function buildSeedDataset() {
       assignedCHW: ids.chwBulawayo,
       assignedClinician: ids.clinicianGeriatrics,
       status: 'active',
-      transitionType: 'clinic_followup',
+      transitionType: 'post_acute',
       dischargeDate: daysAgo(12),
       dischargeReason: 'Post-clinic medication adjustment for glycaemic control.',
       dischargeFacility: 'Mpilo Central Hospital Outpatient Clinic',
