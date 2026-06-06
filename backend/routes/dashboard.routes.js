@@ -33,6 +33,14 @@ const getLimit = (value, fallback = 10) => {
 const formatDisplayName = (entity = {}) =>
   [entity.firstName, entity.lastName].filter(Boolean).join(' ').trim();
 
+const formatPatientDisplayName = (patient) => {
+  if (!patient) {
+    return '';
+  }
+
+  return formatDisplayName(materializePatient(patient));
+};
+
 const getDayName = (date = new Date()) => (
   ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][date.getDay()]
 );
@@ -217,7 +225,7 @@ const getRecentAdminActivities = async (limit = 10) => {
   return [
     ...recentAlerts.map((alert) => ({
       type: 'alert',
-      message: `${alert.severity || 'new'} alert for ${alert.patient?.firstName || 'Unknown'} ${alert.patient?.lastName || 'patient'}`.trim(),
+      message: `${alert.severity || 'new'} alert for ${formatPatientDisplayName(alert.patient) || 'Unknown patient'}`.trim(),
       timestamp: new Date(alert.createdAt).toLocaleString(),
       createdAt: alert.createdAt
     })),
@@ -514,11 +522,14 @@ router.get('/admin/overview',
         activeAlerts: activeAlerts.map((alert) => ({
           ...alert,
           patient: alert.patient
-            ? {
-                _id: alert.patient._id,
-                patientId: alert.patient.patientId,
-                name: formatDisplayName(alert.patient)
-              }
+            ? (() => {
+                const presentedPatient = materializePatient(alert.patient);
+                return {
+                  _id: presentedPatient._id,
+                  patientId: presentedPatient.patientId,
+                  name: formatDisplayName(presentedPatient)
+                };
+              })()
             : null
         })),
         highRiskPatients,
@@ -652,7 +663,7 @@ router.get('/admin/activities',
       const activities = [
         ...recentAlerts.map((alert) => ({
           type: 'alert',
-          message: `${alert.severity || 'new'} alert for ${alert.patient?.firstName || 'Unknown'} ${alert.patient?.lastName || 'patient'}`.trim(),
+          message: `${alert.severity || 'new'} alert for ${formatPatientDisplayName(alert.patient) || 'Unknown patient'}`.trim(),
           timestamp: new Date(alert.createdAt).toLocaleString(),
           createdAt: alert.createdAt
         })),
@@ -1647,13 +1658,13 @@ router.get('/family/activities',
         ...alerts.map((entry) => ({
           _id: entry._id,
           type: 'alert',
-          description: `${entry.severity || 'New'} alert for ${formatDisplayName(entry.patient) || 'patient'}`,
+          description: `${entry.severity || 'New'} alert for ${formatPatientDisplayName(entry.patient) || 'patient'}`,
           timestamp: entry.createdAt
         })),
         ...telemetry.map((entry) => ({
           _id: entry._id,
           type: 'vitals',
-          description: `Vitals updated for ${formatDisplayName(entry.patient) || 'patient'}`,
+          description: `Vitals updated for ${formatPatientDisplayName(entry.patient) || 'patient'}`,
           timestamp: entry.timestamp
         }))
       ]
