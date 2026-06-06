@@ -14,7 +14,8 @@ import { fileURLToPath } from 'url';
 import { resolve } from 'path';
 
 const DEMO_PASSWORD = process.env.DEMO_PASSWORD || 'Demo@123456';
-const DEMO_SEED_DATE = process.env.DEMO_SEED_DATE || '2026-05-14';
+const DEFAULT_SEED_DATE = new Date().toISOString().slice(0, 10);
+const DEMO_SEED_DATE = process.env.QUALITY_SEED_DATE || process.env.DEMO_SEED_DATE || DEFAULT_SEED_DATE;
 const MONGODB_URI =
   process.env.MONGODB_URI ||
   'mongodb://admin:chengeto_secure_2024@127.0.0.1:27017/chengeto_health?authSource=admin';

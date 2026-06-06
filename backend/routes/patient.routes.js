@@ -18,6 +18,7 @@ import { encryptField, decryptField } from '../utils/encryption.js';
 import { buildCarePlanPayload, buildCarePlanResponse } from '../utils/carePlan.js';
 import { buildFunctionalBaselinePayload } from '../utils/functionalStatus.js';
 import { buildMedicationSnapshot } from '../utils/medication.js';
+import { materializePatient, materializePatients } from '../utils/patientPresentation.js';
 import { buildRiskProfileForPatient, buildRiskProfilesForPatients } from '../services/riskScoring.service.js';
 import { buildPatientAccessMatch } from './compat.utils.js';
 import logger from '../config/logger.js';
@@ -131,10 +132,11 @@ router.get('/',
         Patient.countDocuments(query)
       ]);
 
-      const riskProfiles = await buildRiskProfilesForPatients(patients);
+      const presentedPatients = materializePatients(patients);
+      const riskProfiles = await buildRiskProfilesForPatients(presentedPatients);
 
       // Decrypt sensitive fields for display
-      const decryptedPatients = patients.map(patient => ({
+      const decryptedPatients = presentedPatients.map(patient => ({
         ...patient,
         riskStratification: riskProfiles.get(String(patient._id)) || null
       }));
@@ -180,8 +182,9 @@ router.get('/:id',
         .populate('assignedDevices', 'deviceId deviceType status lastSeen')
         .populate('medicalHistory.clinician', 'firstName lastName specialty')
         .lean();
+      const presentedPatient = materializePatient(patient);
 
-      if (!patient) {
+      if (!presentedPatient) {
         return res.status(404).json({
           success: false,
           message: 'Patient not found'
@@ -190,7 +193,7 @@ router.get('/:id',
 
       // Authorization check
       if (req.user.role === 'caregiver') {
-        const isAssigned = patient.assignedCaregivers.some(
+        const isAssigned = presentedPatient.assignedCaregivers.some(
           cg => cg._id.toString() === req.user._id.toString()
         );
         if (!isAssigned) {
@@ -203,7 +206,7 @@ router.get('/:id',
         // Check if family member is linked to patient
         const familyLink = await User.findOne({
           _id: req.user._id,
-          linkedPatients: patient._id
+          linkedPatients: presentedPatient._id
         });
         if (!familyLink) {
           return res.status(403).json({
@@ -212,15 +215,15 @@ router.get('/:id',
           });
         }
         // Family members see limited data
-        delete patient.medicalHistory;
-        delete patient.insuranceInfo;
+        delete presentedPatient.medicalHistory;
+        delete presentedPatient.insuranceInfo;
       }
 
-      patient.riskStratification = await buildRiskProfileForPatient(patient);
+      presentedPatient.riskStratification = await buildRiskProfileForPatient(presentedPatient);
 
       res.json({
         success: true,
-        data: patient
+        data: presentedPatient
       });
 
     } catch (error) {

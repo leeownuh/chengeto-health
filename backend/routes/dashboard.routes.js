@@ -17,6 +17,7 @@ import { authenticate, authorize } from '../middleware/auth.middleware.js';
 import { getBlockchainStatus } from '../services/blockchain.service.js';
 import { buildMedicationSnapshot } from '../utils/medication.js';
 import { buildWorkflowSnapshot } from '../utils/workflowTasks.js';
+import { materializePatient, materializePatients } from '../utils/patientPresentation.js';
 import { buildRiskProfileForPatient, buildRiskProfilesForPatients } from '../services/riskScoring.service.js';
 import logger from '../config/logger.js';
 
@@ -111,25 +112,29 @@ const buildOfflineDeviceQuery = (onlineThreshold) => ({
   ]
 });
 
-const summarizePatient = (patient = {}) => ({
-  _id: patient._id,
-  id: patient._id,
-  patientId: patient.patientId,
-  firstName: patient.firstName,
-  lastName: patient.lastName,
-  name: formatDisplayName(patient),
-  status: patient.status,
-  riskLevel: patient.riskLevel,
-  location: patient.address?.coordinates
+const summarizePatient = (patient = {}) => {
+  const presentedPatient = materializePatient(patient);
+
+  return {
+    _id: presentedPatient?._id,
+    id: presentedPatient?._id,
+    patientId: presentedPatient?.patientId,
+    firstName: presentedPatient?.firstName,
+    lastName: presentedPatient?.lastName,
+    name: formatDisplayName(presentedPatient),
+    status: presentedPatient?.status,
+    riskLevel: presentedPatient?.riskLevel,
+    location: presentedPatient?.address?.coordinates
     ? {
-        latitude: patient.address.coordinates.latitude,
-        longitude: patient.address.coordinates.longitude
+        latitude: presentedPatient.address.coordinates.latitude,
+        longitude: presentedPatient.address.coordinates.longitude
       }
-    : null
-});
+      : null
+  };
+};
 
 const buildRankedPatients = (patients = [], riskProfiles = new Map()) => (
-  patients
+  materializePatients(patients)
     .map((patient) => {
       const riskStratification = riskProfiles.get(String(patient._id)) || null;
       return {
@@ -145,7 +150,7 @@ const buildRankedPatients = (patients = [], riskProfiles = new Map()) => (
 );
 
 const collectTransitionTasksForRole = (patients = [], riskProfiles = new Map(), ownerRole = 'caregiver') => (
-  patients.flatMap((patient) => {
+  materializePatients(patients).flatMap((patient) => {
     const riskStratification = riskProfiles.get(String(patient._id));
     return (riskStratification?.transitionSummaries || []).flatMap((transition) =>
       (transition.followUpTasks || [])
@@ -168,7 +173,7 @@ const collectTransitionTasksForRole = (patients = [], riskProfiles = new Map(), 
 );
 
 const collectTransitionTasks = (patients = [], riskProfiles = new Map()) => (
-  patients.flatMap((patient) => {
+  materializePatients(patients).flatMap((patient) => {
     const riskStratification = riskProfiles.get(String(patient._id));
     return (riskStratification?.transitionSummaries || []).flatMap((transition) =>
       (transition.followUpTasks || [])

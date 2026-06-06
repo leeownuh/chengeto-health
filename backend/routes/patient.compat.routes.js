@@ -12,6 +12,7 @@ import { normalizeNcdConditions } from '../config/elderlyNcdProfiles.js';
 import { buildCarePlanPayload } from '../utils/carePlan.js';
 import { buildFunctionalBaselinePayload } from '../utils/functionalStatus.js';
 import { buildMedicationSnapshot } from '../utils/medication.js';
+import { materializePatient, materializePatients } from '../utils/patientPresentation.js';
 import { buildRiskProfileForPatient, buildRiskProfilesForPatients } from '../services/riskScoring.service.js';
 import {
   ACTIVE_ALERT_STATUSES,
@@ -238,12 +239,14 @@ async function getAccessiblePatient(req, patientId) {
     ...buildPatientAccessMatch(req.user)
   };
 
-  return Patient.findOne(query)
+  const patient = await Patient.findOne(query)
     .populate('primaryCaregiver', 'firstName lastName email phone role')
     .populate('assignedCHW', 'firstName lastName email phone role')
     .populate('assignedClinician', 'firstName lastName email phone role')
     .populate('familyMembers.user', 'firstName lastName email phone role')
     .lean({ virtuals: true, getters: true });
+
+  return materializePatient(patient);
 }
 
 router.get(
@@ -254,8 +257,9 @@ router.get(
     const patients = await Patient.find(buildPatientAccessMatch(req.user))
       .populate('assignedCHW', 'firstName lastName')
       .lean({ virtuals: true, getters: true });
+    const presentedPatients = materializePatients(patients);
 
-    const rows = patients.map((patient) => ({
+    const rows = presentedPatients.map((patient) => ({
       patientId: patient.patientId,
       firstName: patient.firstName,
       lastName: patient.lastName,
@@ -304,8 +308,9 @@ router.get(
       .populate('assignedCHW', 'firstName lastName email phone role')
       .populate('assignedClinician', 'firstName lastName email phone role')
       .lean({ virtuals: true, getters: true });
+    const presentedPatients = materializePatients(patients);
 
-    const filteredPatients = patients.filter(searchMatcher);
+    const filteredPatients = presentedPatients.filter(searchMatcher);
     const patientIds = filteredPatients.map((patient) => patient._id);
     const context = await getPatientContext(patientIds);
     const riskProfiles = await buildRiskProfilesForPatients(filteredPatients, {
