@@ -973,9 +973,18 @@ router.get('/overview',
         Alert.countDocuments({ status: { $in: ['active', 'acknowledged', 'escalated'] } }),
         CheckIn.countDocuments({
           status: 'completed',
-          timestamp: {
-            $gte: new Date(new Date().setHours(0, 0, 0, 0))
-          }
+          $or: [
+            {
+              timestamp: {
+                $gte: new Date(new Date().setHours(0, 0, 0, 0))
+              }
+            },
+            {
+              actualTime: {
+                $gte: new Date(new Date().setHours(0, 0, 0, 0))
+              }
+            }
+          ]
         }),
         IoTDevice.countDocuments(buildTrackedDeviceQuery()),
         IoTDevice.countDocuments(buildConnectedDeviceQuery(onlineThreshold)),

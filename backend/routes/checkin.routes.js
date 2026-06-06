@@ -29,12 +29,14 @@ import logger from '../config/logger.js';
 const router = express.Router();
 const ACTIVE_MEDICATION_ALERT_STATUSES = ['pending', 'acknowledged', 'escalated'];
 
-function presentCheckIn(checkIn) {
+function presentCheckIn(checkIn, patientOverride = null) {
   if (!checkIn) {
     return checkIn;
   }
 
-  const presentedPatient = checkIn.patient ? materializePatient(checkIn.patient) : null;
+  const presentedPatient = patientOverride
+    ? materializePatient(patientOverride)
+    : (checkIn.patient ? materializePatient(checkIn.patient) : null);
 
   return {
     ...checkIn,
@@ -345,7 +347,20 @@ router.get('/',
         CheckIn.countDocuments(query)
       ]);
 
-      const presentedCheckIns = checkIns.map((checkIn) => presentCheckIn(checkIn));
+      const patientIds = [...new Set(
+        checkIns
+          .map((checkIn) => checkIn.patient?._id || checkIn.patient)
+          .filter(Boolean)
+          .map((value) => String(value))
+      )];
+      const patientDocs = await Patient.find({ _id: { $in: patientIds } })
+        .select('firstName lastName patientId status address')
+        .lean();
+      const patientMap = new Map(patientDocs.map((patient) => [String(patient._id), patient]));
+      const presentedCheckIns = checkIns.map((checkIn) => {
+        const patientId = String(checkIn.patient?._id || checkIn.patient || '');
+        return presentCheckIn(checkIn, patientMap.get(patientId) || null);
+      });
 
       res.json({
         success: true,
@@ -393,9 +408,15 @@ router.get('/:id',
         });
       }
 
+      const patientDoc = checkIn.patient?._id
+        ? await Patient.findById(checkIn.patient._id)
+          .select('firstName lastName patientId status address')
+          .lean()
+        : null;
+
       res.json({
         success: true,
-        data: presentCheckIn(checkIn)
+        data: presentCheckIn(checkIn, patientDoc)
       });
 
     } catch (error) {
