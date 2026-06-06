@@ -15,9 +15,31 @@ import AuditLog from '../models/AuditLog.js';
 import { authenticate, authorize, authenticateDevice } from '../middleware/auth.middleware.js';
 import { iotRateLimiter } from '../middleware/rateLimit.middleware.js';
 import { triggerAlertEscalation } from '../services/escalation.service.js';
+import { materializePatient } from '../utils/patientPresentation.js';
 import logger from '../config/logger.js';
 
 const router = express.Router();
+
+const presentAssignedPatient = (patient) => {
+  if (!patient) {
+    return patient;
+  }
+
+  const presentedPatient = materializePatient(patient);
+
+  return {
+    _id: presentedPatient._id,
+    patientId: presentedPatient.patientId,
+    firstName: presentedPatient.firstName,
+    lastName: presentedPatient.lastName,
+    status: presentedPatient.status
+  };
+};
+
+const presentDevice = (device) => ({
+  ...device,
+  assignedPatient: presentAssignedPatient(device.assignedPatient)
+});
 
 function mapMotionType(activity) {
   switch (activity) {
@@ -728,10 +750,12 @@ router.get('/devices',
         IoTDevice.countDocuments(query)
       ]);
 
+      const presentedDevices = devices.map((device) => presentDevice(device));
+
       res.json({
         success: true,
         data: {
-          devices,
+          devices: presentedDevices,
           pagination: {
             current: parseInt(page),
             pages: Math.ceil(total / limit),
@@ -866,7 +890,7 @@ router.get('/devices/:id',
 
       res.json({
         success: true,
-        data: device
+        data: presentDevice(device)
       });
 
     } catch (error) {

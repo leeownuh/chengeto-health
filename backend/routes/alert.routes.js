@@ -13,11 +13,36 @@ import { authenticate, authorize } from '../middleware/auth.middleware.js';
 import { rateLimiter } from '../middleware/rateLimit.middleware.js';
 import { escalateAlert } from '../services/escalation.service.js';
 import { recordCareEvent } from '../services/blockchain.service.js';
+import { materializePatient } from '../utils/patientPresentation.js';
 import logger from '../config/logger.js';
 
 const router = express.Router();
 
 router.use(rateLimiter);
+
+const presentAlertPatient = (patient) => {
+  if (!patient) {
+    return patient;
+  }
+
+  const presentedPatient = materializePatient(patient);
+
+  return {
+    ...patient,
+    _id: presentedPatient._id,
+    patientId: presentedPatient.patientId,
+    firstName: presentedPatient.firstName,
+    lastName: presentedPatient.lastName,
+    status: presentedPatient.status,
+    address: presentedPatient.address,
+    emergencyContact: presentedPatient.emergencyContact
+  };
+};
+
+const presentAlert = (alert) => ({
+  ...alert,
+  patient: presentAlertPatient(alert.patient)
+});
 
 /**
  * @route   GET /api/alerts
@@ -100,10 +125,12 @@ router.get('/',
         Alert.countDocuments(query)
       ]);
 
+      const presentedAlerts = alerts.map((alert) => presentAlert(alert));
+
       res.json({
         success: true,
         data: {
-          alerts,
+          alerts: presentedAlerts,
           pagination: {
             current: parseInt(page),
             pages: Math.ceil(total / limit),
@@ -151,20 +178,22 @@ router.get('/active',
         .sort({ severity: -1, createdAt: -1 })
         .lean();
 
+      const presentedAlerts = alerts.map((alert) => presentAlert(alert));
+
       // Group by severity for dashboard
       const groupedAlerts = {
-        critical: alerts.filter(a => a.severity === 'critical'),
-        high: alerts.filter(a => a.severity === 'high'),
-        medium: alerts.filter(a => a.severity === 'medium'),
-        low: alerts.filter(a => a.severity === 'low')
+        critical: presentedAlerts.filter(a => a.severity === 'critical'),
+        high: presentedAlerts.filter(a => a.severity === 'high'),
+        medium: presentedAlerts.filter(a => a.severity === 'medium'),
+        low: presentedAlerts.filter(a => a.severity === 'low')
       };
 
       res.json({
         success: true,
         data: {
-          total: alerts.length,
+          total: presentedAlerts.length,
           grouped: groupedAlerts,
-          alerts
+          alerts: presentedAlerts
         }
       });
 
@@ -206,7 +235,7 @@ router.get('/:id',
 
       res.json({
         success: true,
-        data: alert
+        data: presentAlert(alert)
       });
 
     } catch (error) {
