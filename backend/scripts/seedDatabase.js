@@ -984,12 +984,8 @@ async function main() {
 
   console.log('Quality seed data applied successfully');
   console.log(JSON.stringify(counts, null, 2));
-  console.log(`Admin: admin@chengeto.health / ${DEMO_PASSWORD}`);
-  console.log(`Caregiver North: caregiver1@example.com / ${DEMO_PASSWORD}`);
-  console.log(`Caregiver South: caregiver2@example.com / ${DEMO_PASSWORD}`);
-  console.log(`CHW Harare: chw1@chengeto.health / ${DEMO_PASSWORD}`);
-  console.log(`CHW Bulawayo: chw2@chengeto.health / ${DEMO_PASSWORD}`);
-  console.log(`Clinician Rehab: clinician2@chengeto.health / ${DEMO_PASSWORD}`);
+  console.log('Seeded demo principals: admin@chengeto.health, caregiver1@example.com, caregiver2@example.com, chw1@chengeto.health, chw2@chengeto.health, clinician2@chengeto.health');
+  console.log('Use DEMO_PASSWORD from the secure runtime environment when validating seeded accounts.');
   console.log('Use --entities=users,patients or --entities=alerts and --fresh for entity-by-entity reseeding.');
 }
 
