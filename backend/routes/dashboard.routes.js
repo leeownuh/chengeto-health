@@ -432,6 +432,11 @@ router.get('/admin/overview',
   async (req, res) => {
     try {
       const onlineThreshold = new Date(Date.now() - DEVICE_ONLINE_WINDOW_MS);
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const tomorrowStart = new Date(todayStart);
+      tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+      const todayName = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][todayStart.getDay()];
       const cpuLoad = os.cpus().length > 0
         ? Math.min(100, Math.round((os.loadavg()[0] / os.cpus().length) * 100))
         : 0;
@@ -968,7 +973,7 @@ router.get('/overview',
         Patient.countDocuments({ status: { $ne: 'archived' } }),
         Patient.countDocuments({ status: 'active' }),
         User.countDocuments({ role: 'caregiver' }),
-        User.countDocuments({ role: 'caregiver', isActive: true }),
+        User.countDocuments({ role: 'caregiver', status: 'active' }),
         Alert.countDocuments({ createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } }),
         Alert.countDocuments({ status: { $in: ['active', 'acknowledged', 'escalated'] } }),
         CheckIn.countDocuments({
@@ -976,12 +981,14 @@ router.get('/overview',
           $or: [
             {
               timestamp: {
-                $gte: new Date(new Date().setHours(0, 0, 0, 0))
+                $gte: todayStart,
+                $lt: tomorrowStart
               }
             },
             {
               actualTime: {
-                $gte: new Date(new Date().setHours(0, 0, 0, 0))
+                $gte: todayStart,
+                $lt: tomorrowStart
               }
             }
           ]
@@ -1008,7 +1015,14 @@ router.get('/overview',
 
       // Get check-in compliance rate
       const scheduledToday = await CareSchedule.aggregate([
-        { $unwind: '$checkInSchedule.preferredTimes' },
+        { $match: { status: 'active' } },
+        { $unwind: '$checkinWindows' },
+        {
+          $match: {
+            'checkinWindows.required': true,
+            'checkinWindows.days': todayName
+          }
+        },
         { $count: 'total' }
       ]);
 

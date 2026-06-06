@@ -1022,7 +1022,7 @@ export function buildSeedDataset() {
 
   let checkInSeq = 1;
   const checkins = patientConfigs.flatMap((patient, index) => {
-    const dayOffsets = [6 + (index % 3), 28 + (index % 5), 74 + (index % 4), 150 + (index % 6)];
+    const dayOffsets = [30 + (index % 6), 72 + (index % 5), 168 + (index % 4) * 6, 336 + (index % 6) * 12];
     const completedToday = index < 14;
 
     return dayOffsets.map((hourOffset, sampleIndex) => {
