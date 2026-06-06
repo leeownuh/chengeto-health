@@ -8,6 +8,7 @@ import {
   parseLimit,
   parsePage
 } from './compat.utils.js';
+import { materializePatient } from '../utils/patientPresentation.js';
 
 const router = express.Router();
 
@@ -63,7 +64,25 @@ router.get(
       CheckIn.countDocuments(dbQuery)
     ]);
 
-    const payload = checkIns.map(mapCheckInLegacy);
+    const checkInPatientIds = [...new Set(
+      checkIns
+        .map((checkIn) => checkIn.patient?._id || checkIn.patient)
+        .filter(Boolean)
+        .map((value) => String(value))
+    )];
+    const patientDocs = await Patient.find({ _id: { $in: checkInPatientIds } })
+      .select('firstName lastName patientId status address')
+      .lean();
+    const patientMap = new Map(patientDocs.map((patient) => [String(patient._id), materializePatient(patient)]));
+
+    const payload = checkIns.map((checkIn) => {
+      const patientId = String(checkIn.patient?._id || checkIn.patient || '');
+      const patient = patientMap.get(patientId);
+      return mapCheckInLegacy({
+        ...checkIn,
+        patient: patient || checkIn.patient
+      });
+    });
 
     res.json({
       success: true,
