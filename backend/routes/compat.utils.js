@@ -1,5 +1,6 @@
 import { buildMonitoringSummary } from '../config/elderlyNcdProfiles.js';
 import { buildCarePlanResponse } from '../utils/carePlan.js';
+import { materializePatient } from '../utils/patientPresentation.js';
 
 export const ACTIVE_ALERT_STATUSES = ['pending', 'acknowledged', 'escalated'];
 
@@ -63,23 +64,24 @@ export function summarizePatient(patient) {
     return null;
   }
 
-  const id = patient._id ?? patient.id ?? patient;
+  const presentedPatient = materializePatient(patient);
+  const id = presentedPatient._id ?? presentedPatient.id ?? presentedPatient;
 
   return {
     _id: id,
     id,
-    patientId: patient.patientId,
-    firstName: patient.firstName,
-    lastName: patient.lastName,
-    name: [patient.firstName, patient.lastName].filter(Boolean).join(' ').trim(),
-    status: patient.status,
-    location: patient.address?.coordinates
+    patientId: presentedPatient.patientId,
+    firstName: presentedPatient.firstName,
+    lastName: presentedPatient.lastName,
+    name: [presentedPatient.firstName, presentedPatient.lastName].filter(Boolean).join(' ').trim(),
+    status: presentedPatient.status,
+    location: presentedPatient.address?.coordinates
       ? {
-          latitude: patient.address.coordinates.latitude,
-          longitude: patient.address.coordinates.longitude
+          latitude: presentedPatient.address.coordinates.latitude,
+          longitude: presentedPatient.address.coordinates.longitude
         }
       : null,
-    address: formatPatientAddress(patient.address)
+    address: formatPatientAddress(presentedPatient.address)
   };
 }
 
