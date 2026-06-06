@@ -23,10 +23,35 @@ import {
   calculateRecordedMedicationAdherence,
   normalizeMedicationCheckInPayload
 } from '../utils/medication.js';
+import { materializePatient } from '../utils/patientPresentation.js';
 import logger from '../config/logger.js';
 
 const router = express.Router();
 const ACTIVE_MEDICATION_ALERT_STATUSES = ['pending', 'acknowledged', 'escalated'];
+
+function presentCheckIn(checkIn) {
+  if (!checkIn) {
+    return checkIn;
+  }
+
+  const presentedPatient = checkIn.patient ? materializePatient(checkIn.patient) : null;
+
+  return {
+    ...checkIn,
+    patient: presentedPatient
+      ? {
+          ...checkIn.patient,
+          _id: presentedPatient._id,
+          patientId: presentedPatient.patientId,
+          firstName: presentedPatient.firstName,
+          lastName: presentedPatient.lastName,
+          status: presentedPatient.status,
+          address: presentedPatient.address,
+          name: `${presentedPatient.firstName} ${presentedPatient.lastName}`.trim()
+        }
+      : checkIn.patient
+  };
+}
 
 function buildHandoffEntries(input, userId, timestamp = new Date()) {
   if (!input || typeof input !== 'object') {
@@ -320,10 +345,12 @@ router.get('/',
         CheckIn.countDocuments(query)
       ]);
 
+      const presentedCheckIns = checkIns.map((checkIn) => presentCheckIn(checkIn));
+
       res.json({
         success: true,
         data: {
-          checkIns,
+          checkIns: presentedCheckIns,
           pagination: {
             current: parseInt(page),
             pages: Math.ceil(total / limit),
@@ -368,7 +395,7 @@ router.get('/:id',
 
       res.json({
         success: true,
-        data: checkIn
+        data: presentCheckIn(checkIn)
       });
 
     } catch (error) {
