@@ -14,7 +14,8 @@ import { fileURLToPath } from 'url';
 import { resolve } from 'path';
 
 const DEMO_PASSWORD = process.env.DEMO_PASSWORD || 'Demo@123456';
-const DEFAULT_SEED_DATE = new Date().toISOString().slice(0, 10);
+const DEFAULT_SEED_ANCHOR = new Date();
+const DEFAULT_SEED_DATE = DEFAULT_SEED_ANCHOR.toISOString().slice(0, 10);
 const DEMO_SEED_DATE = process.env.QUALITY_SEED_DATE || process.env.DEMO_SEED_DATE || DEFAULT_SEED_DATE;
 const MONGODB_URI =
   process.env.MONGODB_URI ||
@@ -66,7 +67,9 @@ const rolePermissions = {
 };
 
 const oid = () => new mongoose.Types.ObjectId();
-const baseNow = new Date(`${DEMO_SEED_DATE}T12:00:00.000Z`);
+const baseNow = process.env.QUALITY_SEED_DATE || process.env.DEMO_SEED_DATE
+  ? new Date(`${DEMO_SEED_DATE}T12:00:00.000Z`)
+  : DEFAULT_SEED_ANCHOR;
 const baseNowMs = baseNow.getTime();
 const rel = (ms) => new Date(baseNowMs + ms);
 const daysAgo = (days) => rel(-days * 86400000);
@@ -1035,6 +1038,7 @@ export function buildSeedDataset() {
         checkinId: makeStampedId('CHK', checkInSeq++),
         patient: patient._id,
         caregiver: patient.caregiverId,
+        timestamp: actual,
         verificationMethod: sampleIndex % 3 === 0 ? 'nfc' : sampleIndex % 3 === 1 ? 'ble' : 'manual_override',
         type: sampleIndex === 2 && patient.riskLevel === 'critical' ? 'follow_up' : 'scheduled',
         scheduledTime: scheduled,
