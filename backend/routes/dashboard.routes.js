@@ -231,7 +231,7 @@ const getRecentAdminActivities = async (limit = 10) => {
     })),
     ...recentCheckIns.map((checkIn) => ({
       type: 'checkin',
-      message: `Check-in ${checkIn.status || 'recorded'} for ${checkIn.patient?.firstName || 'Unknown'} ${checkIn.patient?.lastName || 'patient'}`.trim(),
+      message: `Check-in ${checkIn.status || 'recorded'} for ${formatPatientDisplayName(checkIn.patient) || 'Unknown patient'}`.trim(),
       timestamp: new Date(checkIn.timestamp || checkIn.createdAt).toLocaleString(),
       createdAt: checkIn.timestamp || checkIn.createdAt
     })),
@@ -669,7 +669,7 @@ router.get('/admin/activities',
         })),
         ...recentCheckIns.map((checkIn) => ({
           type: 'checkin',
-          message: `Check-in ${checkIn.status || 'recorded'} for ${checkIn.patient?.firstName || 'Unknown'} ${checkIn.patient?.lastName || 'patient'}`.trim(),
+          message: `Check-in ${checkIn.status || 'recorded'} for ${formatPatientDisplayName(checkIn.patient) || 'Unknown patient'}`.trim(),
           timestamp: new Date(checkIn.timestamp || checkIn.createdAt).toLocaleString(),
           createdAt: checkIn.timestamp || checkIn.createdAt
         })),
