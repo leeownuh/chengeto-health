@@ -189,7 +189,7 @@ function buildAuditLog(logId, action, category, actor, target, details, timestam
   };
 }
 
-function buildSeedDataset() {
+export function buildSeedDataset() {
   const patientCount = 24;
   const ids = {
     adminPrimary: oid(),
@@ -834,7 +834,7 @@ function buildSeedDataset() {
         caregiverInstructions: 'Escalate any rapid change in mobility, breathing, vitals, or confusion.'
       },
       visitCadence: {
-        frequency: patient.riskLevel === 'critical' ? 'twice-daily' : patient.riskLevel === 'high' ? 'daily' : 'five-times-weekly',
+        frequency: patient.riskLevel === 'critical' ? 'twice-daily' : patient.riskLevel === 'high' ? 'daily' : 'alternate',
         preferredWindow: index % 2 === 0 ? 'morning' : 'afternoon',
         preferredDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
         notes: `Coordinated through ${patient.region} team`
@@ -880,7 +880,7 @@ function buildSeedDataset() {
     model: patient.riskLevel === 'critical' ? 'Guardian Pro' : 'Guardian Lite',
     manufacturer: 'CHENGETO Labs',
     firmwareVersion: patient.riskLevel === 'critical' ? '1.5.0' : '1.4.2',
-    capabilities: ['heart_rate', 'motion', 'fall_detection', 'location', 'panic_button', 'ble', 'nfc', 'medication_reminders'],
+    capabilities: ['heart_rate', 'motion', 'fall_detection', 'location', 'panic_button', 'ble', 'nfc'],
     owner: patient.caregiverId,
     assignedPatient: patient._id,
     assignedCaregiver: patient.caregiverId,
@@ -1354,7 +1354,7 @@ function buildSeedDataset() {
       AUDIT_ACTIONS.DATA_ACCESS,
       'data_access',
       actor(transition.createdBy, clinician?.email || 'clinician@chengeto.health', 'clinician'),
-      { type: 'transition', id: transition._id, model: 'CareTransition', description: transition.transitionId },
+      { type: 'other', id: transition._id, model: 'CareTransition', description: transition.transitionId },
       { message: `Reviewed transition workflow for ${transition.transitionType}.` },
       minutesAgo(55 + index * 7)
     );
