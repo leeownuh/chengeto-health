@@ -62,11 +62,13 @@ import { initializeBlockchainService } from '../services/blockchain.service.js';
 import { initializeMqttIngestion } from '../services/mqttIngestion.service.js';
 import { getAuthDataRepairOptionsFromEnv, runAuthDataRepair } from '../utils/authDataRepair.js';
 import { getDemoAccountReseedOptionsFromEnv, reseedDemoAccounts } from '../utils/demoAccountReseed.js';
+import { getQualitySeedOptionsFromEnv, runQualitySeed } from '../scripts/seedDatabase.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const authDataRepairOptions = getAuthDataRepairOptionsFromEnv();
 const demoAccountReseedOptions = getDemoAccountReseedOptionsFromEnv();
+const qualitySeedOptions = getQualitySeedOptionsFromEnv();
 
 const app = express();
 const server = http.createServer(app);
@@ -291,6 +293,15 @@ const startServer = async () => {
 
       const reseedResult = await reseedDemoAccounts(demoAccountReseedOptions);
       logger.info(`Demo account reseed completed in ${reseedResult.report.dryRun ? 'dry-run' : 'apply'} mode`);
+    }
+
+    if (qualitySeedOptions.mode !== 'off') {
+      logger.warn('Quality seed requested at startup');
+
+      const qualitySeedResult = await runQualitySeed(qualitySeedOptions);
+      logger.info(
+        `Quality seed completed in ${qualitySeedResult.report.dryRun ? 'dry-run' : 'apply'} mode for entities: ${qualitySeedResult.report.entities.join(', ')}`
+      );
     }
 
     // Start app-level Prometheus gauges (patients/alerts/checkins/devices/users).

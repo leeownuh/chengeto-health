@@ -11,6 +11,8 @@
     "test:watch": "jest --watch",
     "lint": "eslint \"src/**/*.js\"",
     "seed": "node scripts/seedDatabase.js",
+    "seed:fresh": "node scripts/seedDatabase.js --fresh",
+    "seed:list": "node scripts/seedDatabase.js --list-entities",
     "repair:auth-data": "node scripts/repairAuthData.js",
     "reseed:demo-accounts": "node scripts/reseedDemoAccounts.js"
   },
