@@ -4,15 +4,85 @@
  */
 
 import aedes from 'aedes';
+import crypto from 'crypto';
 import { createRequire } from 'module';
+import { WebSocketServer, createWebSocketStream } from 'ws';
 import { logger } from './logger.js';
 import IoTDevice from '../models/IoTDevice.js';
 
 let mqttBroker = null;
 let mqttServer = null;
 let wsServer = null;
+let wsUpgradeBound = false;
+let wsPublicReady = false;
 const require = createRequire(import.meta.url);
 const { createServer: createAedesServer } = require('aedes-server-factory');
+
+const DEFAULT_MQTT_WS_PATH = '/mqtt';
+const DEFAULT_SIMULATOR_TTL_SECONDS = 15 * 60;
+
+const normalizeMqttWsPath = (value = DEFAULT_MQTT_WS_PATH) => {
+  const trimmed = String(value || DEFAULT_MQTT_WS_PATH).trim();
+  if (!trimmed || trimmed === '/') {
+    return DEFAULT_MQTT_WS_PATH;
+  }
+
+  return trimmed.startsWith('/') ? trimmed.replace(/\/+$/, '') : `/${trimmed.replace(/\/+$/, '')}`;
+};
+
+export const getMqttWsPath = () => normalizeMqttWsPath(process.env.MQTT_WS_PATH || DEFAULT_MQTT_WS_PATH);
+
+const getSimulatorSigningSecret = () =>
+  process.env.MQTT_SIMULATOR_SECRET ||
+  process.env.JWT_SECRET ||
+  process.env.REFRESH_TOKEN_SECRET ||
+  'development-simulator-secret';
+
+const signSimulatorCredential = ({ deviceId, expiresAt }) =>
+  crypto
+    .createHmac('sha256', getSimulatorSigningSecret())
+    .update(`${deviceId}:${expiresAt}`)
+    .digest('hex');
+
+const verifySimulatorCredential = ({ deviceId, password }) => {
+  const token = String(password || '');
+  const [, expiresAtRaw, signature = ''] = token.split('.');
+  const expiresAt = Number.parseInt(expiresAtRaw, 10);
+
+  if (!deviceId || !Number.isFinite(expiresAt) || expiresAt < Date.now()) {
+    return false;
+  }
+
+  const expectedSignature = signSimulatorCredential({ deviceId, expiresAt });
+
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(signature, 'hex'),
+      Buffer.from(expectedSignature, 'hex')
+    );
+  } catch {
+    return false;
+  }
+};
+
+export const issueSimulatorCredentials = ({ deviceId, ttlSeconds = DEFAULT_SIMULATOR_TTL_SECONDS }) => {
+  const resolvedDeviceId = String(deviceId || '').trim();
+  const expiresAt = Date.now() + (Math.max(60, Number(ttlSeconds) || DEFAULT_SIMULATOR_TTL_SECONDS) * 1000);
+  const signature = signSimulatorCredential({ deviceId: resolvedDeviceId, expiresAt });
+
+  return {
+    username: resolvedDeviceId,
+    password: `sim.${expiresAt}.${signature}`,
+    expiresAt: new Date(expiresAt).toISOString()
+  };
+};
+
+export const getMQTTStatus = () => ({
+  brokerReady: Boolean(mqttBroker),
+  tcpReady: Boolean(mqttServer?.listening),
+  publicWebSocketReady: Boolean(wsPublicReady),
+  webSocketPath: getMqttWsPath()
+});
 
 // Aedes instance with persistence
 const aedesInstance = aedes({
@@ -49,7 +119,9 @@ aedesInstance.authenticate = async (client, username, password, callback) => {
     const device = await IoTDevice.findOne({ deviceId }).select('+security.apiSecret');
     const expected = device?.security?.apiSecret;
 
-    if (!device || !expected || secret !== expected) {
+    const simulatorTokenValid = verifySimulatorCredential({ deviceId, password: secret });
+
+    if ((!device || !expected || secret !== expected) && !simulatorTokenValid) {
       logger.warn('MQTT authentication failed', { clientId: client.id, deviceId });
       const error = new Error('Authentication failed');
       error.returnCode = 4;
@@ -57,7 +129,12 @@ aedesInstance.authenticate = async (client, username, password, callback) => {
     }
 
     client.deviceId = deviceId;
-    logger.debug('MQTT client authenticated', { clientId: client.id, deviceId });
+    client.isSimulatorSession = simulatorTokenValid;
+    logger.debug('MQTT client authenticated', {
+      clientId: client.id,
+      deviceId,
+      simulatorSession: simulatorTokenValid
+    });
     callback(null, true);
   } catch (error) {
     logger.error('MQTT authentication error', { error: error.message });
@@ -159,27 +236,13 @@ export const setupMQTTBroker = () => {
   return new Promise((resolve, reject) => {
     try {
       const mqttPort = parseInt(process.env.MQTT_PORT) || 1883;
-      const wsPort = parseInt(process.env.MQTT_WS_PORT) || 8083;
 
       // Plain MQTT broker
       mqttServer = createAedesServer(aedesInstance);
       mqttServer.listen(mqttPort, () => {
         logger.info(`MQTT broker listening on port ${mqttPort}`);
-
-        // MQTT over WebSocket for browser clients
-        wsServer = createAedesServer(aedesInstance, {
-          ws: true
-        });
-        wsServer.on('error', (error) => {
-          logger.error('MQTT WebSocket server error', { error: error.message });
-          reject(error);
-        });
-        wsServer.listen(wsPort, () => {
-          logger.info(`MQTT WebSocket server listening on port ${wsPort}`);
-
-          mqttBroker = aedesInstance;
-          resolve(aedesInstance);
-        });
+        mqttBroker = aedesInstance;
+        resolve(aedesInstance);
       });
 
       mqttServer.on('error', (error) => {
@@ -195,6 +258,50 @@ export const setupMQTTBroker = () => {
 };
 
 export const getMQTTBroker = () => mqttBroker;
+
+export const attachMQTTWebSocketServer = (httpServer) => {
+  if (wsServer || !httpServer) {
+    return wsServer;
+  }
+
+  const wsPath = getMqttWsPath();
+
+  wsServer = new WebSocketServer({ noServer: true });
+  wsServer.on('connection', (socket, request) => {
+    const stream = createWebSocketStream(socket);
+    stream._socket = socket._socket;
+    aedesInstance.handle(stream, request);
+  });
+  wsServer.on('error', (error) => {
+    logger.error('MQTT WebSocket bridge error', { error: error.message });
+  });
+
+  if (!wsUpgradeBound) {
+    httpServer.on('upgrade', (request, socket, head) => {
+      const requestPath = (() => {
+        try {
+          return new URL(request.url || '/', 'http://localhost').pathname;
+        } catch {
+          return request.url || '/';
+        }
+      })();
+
+      if (requestPath !== wsPath) {
+        return;
+      }
+
+      wsServer.handleUpgrade(request, socket, head, (upgradedSocket) => {
+        wsServer.emit('connection', upgradedSocket, request);
+      });
+    });
+    wsUpgradeBound = true;
+  }
+
+  wsPublicReady = true;
+  logger.info('MQTT WebSocket bridge attached', { path: wsPath });
+
+  return wsServer;
+};
 
 export const publishMQTTMessage = (topic, message, options = {}) => {
   return new Promise((resolve, reject) => {
@@ -238,8 +345,19 @@ export const closeMQTTBroker = () => {
     
     if (wsServer) {
       wsServer.close();
+      wsServer = null;
+      wsPublicReady = false;
     }
   });
 };
 
-export default { setupMQTTBroker, getMQTTBroker, publishMQTTMessage, closeMQTTBroker };
+export default {
+  setupMQTTBroker,
+  getMQTTBroker,
+  getMQTTStatus,
+  getMqttWsPath,
+  issueSimulatorCredentials,
+  attachMQTTWebSocketServer,
+  publishMQTTMessage,
+  closeMQTTBroker
+};

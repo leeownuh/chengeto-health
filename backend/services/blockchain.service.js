@@ -48,6 +48,7 @@ const pendingActorRegistrations = new Map();
 
 const ZERO_HASH = ethers.ZeroHash;
 const IS_TEST_ENV = process.env.NODE_ENV === 'test' || Boolean(process.env.JEST_WORKER_ID);
+const DEFAULT_BLOCKCHAIN_RPC_URL = 'http://localhost:8545';
 
 // Event types mapping
 const EVENT_TYPES = {
@@ -196,6 +197,32 @@ const normalizeActorRole = (role) => {
 const deriveActorWalletAddress = (actorId) => {
   const addressHex = hashData(`chengeto-actor:${actorId}`).slice(0, 40);
   return ethers.getAddress(`0x${addressHex}`);
+};
+
+const getConfiguredRpcUrl = () => process.env.BLOCKCHAIN_RPC_URL || DEFAULT_BLOCKCHAIN_RPC_URL;
+
+const getConfiguredContractAddress = () =>
+  process.env.BLOCKCHAIN_CONTRACT_ADDRESS || process.env.CONTRACT_ADDRESS || null;
+
+const isLoopbackRpcUrl = (value) => {
+  try {
+    const parsed = new URL(value);
+    return ['localhost', '127.0.0.1', '::1'].includes(parsed.hostname);
+  } catch {
+    return false;
+  }
+};
+
+const usesPlaceholderBlockchainConfig = () => {
+  const rpcUrl = getConfiguredRpcUrl();
+  const contractAddressValue = getConfiguredContractAddress();
+  const privateKey = process.env.BLOCKCHAIN_PRIVATE_KEY;
+
+  return (
+    isLoopbackRpcUrl(rpcUrl) &&
+    !contractAddressValue &&
+    !privateKey
+  );
 };
 
 const isUnderpricedError = (error) => {
@@ -488,7 +515,7 @@ const ensureActorRegisteredOnChain = async (actorId, role, walletAddress) => {
  */
 export const initializeBlockchainService = async () => {
   try {
-    const rpcUrl = process.env.BLOCKCHAIN_RPC_URL || 'http://localhost:8545';
+    const rpcUrl = getConfiguredRpcUrl();
     const privateKey = process.env.BLOCKCHAIN_PRIVATE_KEY;
 
     provider = new ethers.JsonRpcProvider(rpcUrl);
@@ -995,6 +1022,8 @@ export const getStatistics = async () => {
 
 export const getBlockchainStatus = async () => {
   try {
+    const placeholderConfig = usesPlaceholderBlockchainConfig();
+
     if (!isInitialized) {
       return {
         mode: 'initializing',
@@ -1005,8 +1034,8 @@ export const getBlockchainStatus = async () => {
 
     if (!provider) {
       return {
-        mode: 'offline',
-        connected: false,
+        mode: placeholderConfig ? 'mock' : 'offline',
+        connected: placeholderConfig,
         contractAddress: null
       };
     }

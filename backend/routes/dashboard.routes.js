@@ -15,6 +15,7 @@ import IoTDevice from '../models/IoTDevice.js';
 import CareSchedule from '../models/CareSchedule.js';
 import { authenticate, authorize } from '../middleware/auth.middleware.js';
 import { getBlockchainStatus } from '../services/blockchain.service.js';
+import { getMQTTStatus } from '../config/mqtt.js';
 import { buildMedicationSnapshot } from '../utils/medication.js';
 import { buildWorkflowSnapshot } from '../utils/workflowTasks.js';
 import { materializePatient, materializePatients } from '../utils/patientPresentation.js';
@@ -457,6 +458,7 @@ router.get('/admin/overview',
         totalDevices,
         connectedDevices,
         blockchainStatus,
+        mqttStatus,
         activities,
         recentUsers,
         activeAlerts,
@@ -470,6 +472,7 @@ router.get('/admin/overview',
         IoTDevice.countDocuments(buildTrackedDeviceQuery()),
         IoTDevice.countDocuments(buildConnectedDeviceQuery(onlineThreshold)),
         getBlockchainStatus(),
+        Promise.resolve(getMQTTStatus()),
         getRecentAdminActivities(12),
         getRecentAdminUsers(6),
         Alert.find({ status: { $in: ['active', 'acknowledged', 'escalated'] } })
@@ -509,7 +512,8 @@ router.get('/admin/overview',
         },
         health: {
           database: 'healthy',
-          mqtt: 'healthy',
+          mqtt: mqttStatus.publicWebSocketReady && mqttStatus.brokerReady ? 'healthy' : 'warning',
+          mqttDetails: mqttStatus,
           blockchain: blockchainStatus.mode === 'real' ? 'synced' : blockchainStatus.mode,
           blockchainDetails: blockchainStatus,
           totalDevices,

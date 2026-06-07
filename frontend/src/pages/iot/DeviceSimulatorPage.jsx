@@ -35,11 +35,6 @@ import {
 import mqtt from 'mqtt';
 import { useAuth } from '../../contexts/AuthContext';
 
-const buildWsUrl = () => {
-  const host = window.location.hostname || '127.0.0.1';
-  return `ws://${host}:8083`;
-};
-
 const randomBetween = (min, max) => Math.round((min + Math.random() * (max - min)) * 10) / 10;
 
 const formatJson = (value) => {
@@ -51,7 +46,7 @@ const formatJson = (value) => {
 };
 
 const DeviceSimulatorPage = () => {
-  const { api, user } = useAuth();
+  const { api } = useAuth();
 
   const [devices, setDevices] = useState([]);
   const [devicesLoading, setDevicesLoading] = useState(false);
@@ -66,12 +61,15 @@ const DeviceSimulatorPage = () => {
   const [mqttConnected, setMqttConnected] = useState(false);
   const [mqttError, setMqttError] = useState('');
   const mqttClientRef = useRef(null);
+  const [mqttSession, setMqttSession] = useState(null);
 
   const [streaming, setStreaming] = useState(false);
   const streamTimerRef = useRef(null);
 
   const [intervalMs, setIntervalMs] = useState(2000);
   const [heartRate, setHeartRate] = useState(72);
+  const [systolic, setSystolic] = useState(132);
+  const [diastolic, setDiastolic] = useState(84);
   const [spo2, setSpo2] = useState(97);
   const [temperature, setTemperature] = useState(36.5);
   const [activity, setActivity] = useState('stationary');
@@ -119,7 +117,19 @@ const DeviceSimulatorPage = () => {
     loadDevices();
   }, []);
 
-  const connectMqtt = () => {
+  useEffect(() => {
+    setMqttSession(null);
+  }, [selectedDeviceId]);
+
+  const issueSimulatorSession = async () => {
+    const response = await api.post('/iot/simulator/session', {
+      deviceId: selectedDeviceId
+    });
+
+    return response?.data?.data || null;
+  };
+
+  const connectMqtt = async () => {
     setMqttError('');
 
     if (mqttClientRef.current) {
@@ -131,42 +141,50 @@ const DeviceSimulatorPage = () => {
       mqttClientRef.current = null;
     }
 
-    const wsUrl = buildWsUrl();
-    const clientId = `web-sim-${Date.now()}`;
-    const username = selectedDeviceId || `sim-${user?.email || 'anonymous'}`;
-    const password = 'device-secret';
-
-    const client = mqtt.connect(wsUrl, {
-      clientId,
-      username,
-      password,
-      clean: true,
-      connectTimeout: 10000,
-      reconnectPeriod: 2000
-    });
-
-    mqttClientRef.current = client;
-
-    client.on('connect', () => {
-      setMqttConnected(true);
-      appendLog(`MQTT connected (${wsUrl}) as ${username}`);
-      if (assignedPatientId) {
-        client.subscribe(commandTopic, { qos: 1 }, (err) => {
-          if (err) appendLog(`Subscribe failed (${commandTopic}): ${err.message}`);
-          else appendLog(`Subscribed: ${commandTopic}`);
-        });
+    try {
+      const session = await issueSimulatorSession();
+      if (!session?.wsUrl || !session?.username || !session?.password) {
+        throw new Error('Simulator session is incomplete');
       }
-    });
 
-    client.on('reconnect', () => appendLog('MQTT reconnecting...'));
-    client.on('close', () => setMqttConnected(false));
-    client.on('error', (err) => {
-      setMqttError(err.message);
-      appendLog(`MQTT error: ${err.message}`);
-    });
-    client.on('message', (topic, message) => {
-      appendLog(`MQTT message on ${topic}: ${message.toString().slice(0, 300)}`);
-    });
+      setMqttSession(session);
+
+      const client = mqtt.connect(session.wsUrl, {
+        clientId: `web-sim-${Date.now()}`,
+        username: session.username,
+        password: session.password,
+        clean: true,
+        connectTimeout: 10000,
+        reconnectPeriod: 2000
+      });
+
+      mqttClientRef.current = client;
+
+      client.on('connect', () => {
+        setMqttConnected(true);
+        appendLog(`MQTT connected (${session.wsUrl}) as ${session.username}`);
+        if (session?.topics?.command) {
+          client.subscribe(session.topics.command, { qos: 1 }, (err) => {
+            if (err) appendLog(`Subscribe failed (${session.topics.command}): ${err.message}`);
+            else appendLog(`Subscribed: ${session.topics.command}`);
+          });
+        }
+      });
+
+      client.on('reconnect', () => appendLog('MQTT reconnecting...'));
+      client.on('close', () => setMqttConnected(false));
+      client.on('error', (err) => {
+        setMqttError(err.message);
+        appendLog(`MQTT error: ${err.message}`);
+      });
+      client.on('message', (topic, message) => {
+        appendLog(`MQTT message on ${topic}: ${message.toString().slice(0, 300)}`);
+      });
+    } catch (error) {
+      const message = error?.response?.data?.message || error?.message || 'Failed to connect MQTT';
+      setMqttError(message);
+      appendLog(`MQTT session failed: ${message}`);
+    }
   };
 
   const disconnectMqtt = () => {
@@ -186,6 +204,7 @@ const DeviceSimulatorPage = () => {
       mqttClientRef.current = null;
     }
     setMqttConnected(false);
+    setMqttSession(null);
   };
 
   const buildTelemetryPayload = () => {
@@ -197,6 +216,10 @@ const DeviceSimulatorPage = () => {
       timestamp,
       vitals: {
         heartRate: Math.round(heartRate),
+        bloodPressure: {
+          systolic: Math.round(systolic),
+          diastolic: Math.round(diastolic)
+        },
         oxygenSaturation: Math.round(spo2),
         temperature: Number(temperature)
       },
@@ -390,7 +413,7 @@ const DeviceSimulatorPage = () => {
                     MQTT WS Broker
                   </Typography>
                   <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-                    {buildWsUrl()}
+                    {mqttSession?.wsUrl || 'Connect to issue a hosted simulator session'}
                   </Typography>
                 </Stack>
 
@@ -450,6 +473,18 @@ const DeviceSimulatorPage = () => {
                     Heart Rate (bpm): {heartRate}
                   </Typography>
                   <Slider value={heartRate} min={35} max={180} onChange={(_, v) => setHeartRate(v)} />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Typography variant="caption" color="text.secondary">
+                    Systolic BP (mmHg): {systolic}
+                  </Typography>
+                  <Slider value={systolic} min={80} max={220} onChange={(_, v) => setSystolic(v)} />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Typography variant="caption" color="text.secondary">
+                    Diastolic BP (mmHg): {diastolic}
+                  </Typography>
+                  <Slider value={diastolic} min={50} max={140} onChange={(_, v) => setDiastolic(v)} />
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Typography variant="caption" color="text.secondary">
