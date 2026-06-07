@@ -344,6 +344,6 @@ const main = async () => {
 };
 
 main().catch((error) => {
-  console.error(error);
+  console.error(error?.message || String(error));
   process.exit(1);
 });
