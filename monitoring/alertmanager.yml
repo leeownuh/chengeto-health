@@ -11,6 +11,7 @@ route:
 receivers:
   - name: default
     webhook_configs:
-      # Provide ALERTMANAGER_DEFAULT_WEBHOOK_URL through the environment.
-      - url: ${ALERTMANAGER_DEFAULT_WEBHOOK_URL}
+      # Default local receiver for operator drills.
+      # Mount a custom config through ALERTMANAGER_CONFIG_PATH when routing to a real external webhook.
+      - url: http://host.docker.internal:19093/alerts
         send_resolved: true

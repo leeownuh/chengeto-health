@@ -140,12 +140,13 @@ Use this quick gate when deciding whether to approve first production launch:
 
 ### 1.6 Logging and alert routing
 
-- [ ] Configure a real external alert destination behind `ALERTMANAGER_DEFAULT_WEBHOOK_URL`
+- [ ] Configure a real external Alertmanager receiver config for production notifications
 - [ ] Export Render logs to a dedicated log platform or SIEM
 - [x] Define log retention expectations for production
 - [x] Define who can access production logs containing sensitive operational metadata
 - [x] Define how long security-relevant audit evidence must be retained
 - [x] Alertmanager config supports external webhook routing: `monitoring/alertmanager.yml`
+- [x] Monitoring drill automation exists: `scripts/run-monitoring-drill.mjs`
 - [x] Render/Cloudflare-first logging strategy is documented: `docs/LOGGING_STRATEGY.md`
 
 ### 1.7 Documentation accuracy
@@ -270,16 +271,16 @@ Use this quick gate when deciding whether to approve first production launch:
 - [x] Prometheus, Grafana, and alert rules are present under `monitoring/`
 - [x] SLOs and minimum dashboard expectations are documented
 - [x] Monitoring operations guide exists
-- [ ] Confirm hosted production actually scrapes `/metrics`
-- [ ] Confirm dashboards and alerts are deployed from version-controlled config in the chosen environment
+- [x] Confirm hosted production actually scrapes `/metrics`
+- [x] Confirm dashboards and alerts are deployed from version-controlled config in the chosen environment
 
 ### 5.2 Alerts and response
 
 - [x] Severity model and first-response flow are documented
-- [x] Alertmanager receiver is parameterized via environment variable
+- [x] Alertmanager receiver config is version-controlled and mount-overridable through `ALERTMANAGER_CONFIG_PATH`
 - [~] Alert routing exists in config, but production destination setup is not evidenced in repo
 - [ ] Connect alerts to PagerDuty, Opsgenie, Slack webhook, or equivalent
-- [ ] Test at least one synthetic alert and capture evidence
+- [x] Test at least one synthetic alert and capture evidence
 
 ### 5.3 Logs and tracing
 
@@ -293,6 +294,9 @@ Use this quick gate when deciding whether to approve first production launch:
 ### 5.4 Runbooks and game days
 
 - [x] Release, rollback, secret rotation, on-call, logging, and alert docs exist
+- [x] Render rollback drill automation exists: `scripts/run-render-rollback-drill.mjs`
+- [x] Mongo logical backup and restore drill tooling exists: `backend/scripts/runBackupRestoreDrill.js`
+- [x] Run at least one rollback drill against a live hosted environment
 - [ ] Run at least one release drill and one rollback drill against a staging environment
 - [ ] Run at least one secret-rotation exercise
 - [ ] Run at least one backup restore exercise

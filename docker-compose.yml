@@ -225,8 +225,8 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./monitoring/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+      - ${PROMETHEUS_CONFIG_PATH:-./monitoring/prometheus.yml}:/etc/prometheus/prometheus.yml:ro
+      - ${PROMETHEUS_RULES_PATH:-./monitoring/alert.rules.yml}:/etc/prometheus/alert.rules.yml:ro
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -258,13 +258,10 @@ services:
     restart: unless-stopped
     ports:
       - "9093:9093"
-    environment:
-      ALERTMANAGER_DEFAULT_WEBHOOK_URL: ${ALERTMANAGER_DEFAULT_WEBHOOK_URL:-http://host.docker.internal:19093/alerts}
     volumes:
-      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ${ALERTMANAGER_CONFIG_PATH:-./monitoring/alertmanager.yml}:/etc/alertmanager/alertmanager.yml:ro
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
-      - '--config.expand-env'
       - '--storage.path=/alertmanager'
     networks:
       - chengeto-network

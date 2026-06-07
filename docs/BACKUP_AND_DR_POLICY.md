@@ -23,6 +23,25 @@ Last updated: 2026-06-02
 - Run restore drills at least quarterly
 - Record date, operator, backup source, target environment, result, and follow-up actions
 
+## Repo-backed logical backup drill
+
+For MongoDB environments where provider snapshot access is not exposed directly in this repo workflow, CHENGETO also supports a logical export/restore drill:
+
+```bash
+cd backend
+npm run backup:db -- --out-dir ../outputs/backups/manual
+npm run drill:restore
+```
+
+The restore drill:
+
+- exports the live source database into EJSON files
+- restores into a separate target database
+- validates collection counts against the backup manifest
+- optionally drops the temporary restore target after validation
+
+This does not replace provider-managed snapshots, but it does provide repeatable restore evidence at the application data layer.
+
 ## RTO / RPO targets
 
 - Target RTO: 4 hours

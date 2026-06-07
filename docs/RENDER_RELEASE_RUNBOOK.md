@@ -52,6 +52,23 @@ This runbook documents the minimum safe release path for CHENGETO when using Ren
    - user impact
    - suspected cause
 
+## API-backed rollback drill
+
+The repo includes a Render rollback drill helper:
+
+```bash
+node scripts/run-render-rollback-drill.mjs --service-id <render-service-id> --health-url https://chengeto-health.onrender.com/health
+```
+
+The drill:
+
+- identifies the current live deploy
+- rolls back to the previous deploy through the Render API
+- verifies health after rollback
+- redeploys the original live commit
+- verifies health again
+- writes evidence to `outputs/drills/rollback-<timestamp>/`
+
 ## Notes for config-only changes
 
 - If only frontend `VITE_*` build variables changed, roll back the frontend service first.
