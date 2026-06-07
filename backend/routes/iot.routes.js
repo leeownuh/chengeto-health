@@ -16,6 +16,7 @@ import { authenticate, authorize, authenticateDevice } from '../middleware/auth.
 import { iotRateLimiter } from '../middleware/rateLimit.middleware.js';
 import { triggerAlertEscalation } from '../services/escalation.service.js';
 import { materializePatient } from '../utils/patientPresentation.js';
+import { getMQTTStatus, getMqttWsPath, issueSimulatorCredentials } from '../config/mqtt.js';
 import logger from '../config/logger.js';
 
 const router = express.Router();
@@ -40,6 +41,17 @@ const presentDevice = (device) => ({
   ...device,
   assignedPatient: presentAssignedPatient(device.assignedPatient)
 });
+
+const buildSimulatorWebSocketUrl = (req) => {
+  const forwardedProto = String(req.get('x-forwarded-proto') || req.protocol || 'http')
+    .split(',')[0]
+    .trim()
+    .toLowerCase();
+  const host = req.get('x-forwarded-host') || req.get('host');
+  const protocol = forwardedProto === 'https' ? 'wss' : 'ws';
+
+  return `${protocol}://${host}${getMqttWsPath()}`;
+};
 
 function mapMotionType(activity) {
   switch (activity) {
@@ -769,6 +781,75 @@ router.get('/devices',
       res.status(500).json({
         success: false,
         message: 'Failed to retrieve devices'
+      });
+    }
+  }
+);
+
+/**
+ * @route   POST /api/iot/simulator/session
+ * @desc    Issue short-lived MQTT simulator credentials for a hosted browser session
+ * @access  Private (admin, chw)
+ */
+router.post('/simulator/session',
+  authenticate,
+  authorize(['admin', 'chw']),
+  iotRateLimiter,
+  [body('deviceId').trim().notEmpty().withMessage('Device ID required')],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          errors: errors.array()
+        });
+      }
+
+      const device = await IoTDevice.findOne({ deviceId: req.body.deviceId })
+        .populate('assignedPatient', 'firstName lastName patientId status')
+        .lean();
+
+      if (!device) {
+        return res.status(404).json({
+          success: false,
+          message: 'Device not found'
+        });
+      }
+
+      if (!device.assignedPatient?._id) {
+        return res.status(409).json({
+          success: false,
+          message: 'Selected device must be assigned to a patient before simulator use'
+        });
+      }
+
+      const credentials = issueSimulatorCredentials({ deviceId: device.deviceId });
+      const mqttStatus = getMQTTStatus();
+
+      res.json({
+        success: true,
+        data: {
+          deviceId: device.deviceId,
+          patientId: String(device.assignedPatient._id),
+          wsUrl: buildSimulatorWebSocketUrl(req),
+          username: credentials.username,
+          password: credentials.password,
+          expiresAt: credentials.expiresAt,
+          mqtt: mqttStatus,
+          topics: {
+            telemetry: `chengeto/${device.assignedPatient._id}/telemetry`,
+            status: `chengeto/${device.assignedPatient._id}/status`,
+            alert: `chengeto/${device.assignedPatient._id}/alert`,
+            command: `chengeto/${device.assignedPatient._id}/command`
+          }
+        }
+      });
+    } catch (error) {
+      logger.error('Issue simulator session error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to issue simulator session'
       });
     }
   }

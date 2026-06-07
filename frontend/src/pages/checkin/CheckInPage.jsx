@@ -126,6 +126,16 @@ const buildFunctionalAssessmentDraft = (patient) => {
   };
 };
 
+const resolveBloodPressureValues = (vitals = {}) => {
+  const systolic = vitals.systolic ?? vitals.bloodPressure?.systolic ?? '';
+  const diastolic = vitals.diastolic ?? vitals.bloodPressure?.diastolic ?? '';
+
+  return {
+    systolic,
+    diastolic
+  };
+};
+
 const CheckInPage = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -179,6 +189,7 @@ const CheckInPage = () => {
   // Observation checkboxes
   const [observations, setObservations] = useState([]);
   const selectedMonitoringSummary = getElderlyNcdMonitoringSummary(selectedPatient?.ncdConditions || []);
+  const bloodPressureValues = resolveBloodPressureValues(checkInData.vitals);
 
   useEffect(() => {
     fetchPatients();
@@ -1253,7 +1264,7 @@ const CheckInPage = () => {
                 />
 
                 {(checkInData.vitals.heartRate ||
-                  checkInData.vitals.systolic ||
+                  bloodPressureValues.systolic ||
                   checkInData.vitals.temperature ||
                   checkInData.vitals.spo2 ||
                   checkInData.vitals.bloodGlucose ||
@@ -1266,8 +1277,11 @@ const CheckInPage = () => {
                       {checkInData.vitals.heartRate && (
                         <Chip icon={<Favorite />} label={`HR: ${checkInData.vitals.heartRate} bpm`} />
                       )}
-                      {checkInData.vitals.systolic && (
-                        <Chip icon={<Favorite />} label={`BP: ${checkInData.vitals.systolic}/${checkInData.vitals.diastolic}`} />
+                      {bloodPressureValues.systolic && (
+                        <Chip
+                          icon={<Favorite />}
+                          label={`BP: ${bloodPressureValues.systolic}/${bloodPressureValues.diastolic || '--'}`}
+                        />
                       )}
                       {checkInData.vitals.temperature && (
                         <Chip label={`Temp: ${checkInData.vitals.temperature} deg C`} />

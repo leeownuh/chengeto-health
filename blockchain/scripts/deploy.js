@@ -3,13 +3,14 @@
  */
 
 const hre = require("hardhat");
+const { ethers } = hre;
 const fs = require("fs");
 const path = require("path");
 
 async function main() {
   console.log("Deploying ChengetoHealth contract...");
 
-  const ChengetoHealth = await hre.ethers.getContractFactory("ChengetoHealth");
+  const ChengetoHealth = await ethers.getContractFactory("ChengetoHealth");
   const contract = await ChengetoHealth.deploy();
 
   await contract.waitForDeployment();

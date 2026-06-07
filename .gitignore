@@ -32,6 +32,8 @@ Thumbs.db
 # Hardhat
 .hardhat-home/
 .hardhat-appdata/
+blockchain/artifacts/
+blockchain/cache/
 
 # Local outputs / temp
 outputs/

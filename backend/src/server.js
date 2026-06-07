@@ -30,7 +30,7 @@ import { dirname, join } from 'path';
 
 // Import configurations
 import { connectDatabase } from '../config/database.js';
-import { setupMQTTBroker } from '../config/mqtt.js';
+import { attachMQTTWebSocketServer, setupMQTTBroker } from '../config/mqtt.js';
 import { logger, morganStream } from '../config/logger.js';
 
 // Import routes
@@ -309,6 +309,7 @@ const startServer = async () => {
 
     // Setup MQTT Broker
     const mqttBroker = await setupMQTTBroker();
+    attachMQTTWebSocketServer(server);
     app.set('mqttBroker', mqttBroker);
     logger.info('MQTT broker started');
 
