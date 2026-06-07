@@ -4,14 +4,26 @@ This document explains how to wire CHENGETO alerts into a real notification dest
 
 ## Local monitoring stack
 
-The local monitoring profile uses Alertmanager and reads the destination from:
+The local monitoring profile uses Alertmanager and by default routes to:
 
-- `ALERTMANAGER_DEFAULT_WEBHOOK_URL`
+- `http://host.docker.internal:19093/alerts`
+
+To route to a real webhook, provide a custom Alertmanager config file and mount it with:
+
+- `ALERTMANAGER_CONFIG_PATH`
 
 Set it in `.env` before starting the monitoring profile:
 
 ```bash
-ALERTMANAGER_DEFAULT_WEBHOOK_URL=https://your-webhook-endpoint.example/alerts
+Example custom `alertmanager.yml` snippet:
+
+```yaml
+receivers:
+  - name: default
+    webhook_configs:
+      - url: https://your-webhook-endpoint.example/alerts
+        send_resolved: true
+```
 ```
 
 Then start the stack:
@@ -50,7 +62,7 @@ The local Docker monitoring stack is for development and validation. Render prod
 
 ## Verification
 
-After setting the webhook URL:
+After setting the custom Alertmanager config:
 
 1. start Alertmanager
 2. confirm Prometheus shows an active alert

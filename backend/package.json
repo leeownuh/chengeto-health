@@ -13,6 +13,9 @@
     "seed": "node scripts/seedDatabase.js",
     "seed:fresh": "node scripts/seedDatabase.js --fresh",
     "seed:list": "node scripts/seedDatabase.js --list-entities",
+    "backup:db": "node scripts/backupDatabase.js",
+    "restore:db": "node scripts/restoreDatabase.js",
+    "drill:restore": "node scripts/runBackupRestoreDrill.js",
     "repair:auth-data": "node scripts/repairAuthData.js",
     "reseed:demo-accounts": "node scripts/reseedDemoAccounts.js"
   },

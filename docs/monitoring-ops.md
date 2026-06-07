@@ -12,6 +12,28 @@ docker compose --profile monitoring up -d prometheus alertmanager grafana
 - Alertmanager: `http://localhost:9093`
 - Grafana: `http://localhost:3000`
 
+## Drill automation
+
+Use the monitoring drill script when you need concrete proof that:
+
+- Prometheus can scrape the intended backend
+- alert rules are loaded and firing
+- Alertmanager can route a notification to a webhook
+- Grafana is reachable and dashboards are provisioned
+
+Run:
+
+```bash
+node scripts/run-monitoring-drill.mjs --target chengeto-health.onrender.com
+```
+
+Artifacts are written to:
+
+- `outputs/drills/monitoring-<timestamp>/`
+- `docs/ui-snapshots/latest/`
+
+The drill creates a temporary synthetic alert named `ChengetoSyntheticDrill` so alert routing can be proven without breaking the live backend.
+
 ## Current telemetry
 
 - Backend metrics: `http://backend:5000/metrics`
@@ -31,8 +53,8 @@ Alert rules live in `monitoring/alert.rules.yml`.
 Alertmanager config lives in `monitoring/alertmanager.yml`.
 
 - Prometheus sends alerts to `alertmanager:9093`
-- the default receiver reads `ALERTMANAGER_DEFAULT_WEBHOOK_URL` from the environment
-- set a real Slack, Teams, PagerDuty relay, or webhook target before relying on notifications
+- the default receiver targets a local webhook capture endpoint for drills
+- mount a custom Alertmanager config through `ALERTMANAGER_CONFIG_PATH` when routing to a real Slack, Teams, PagerDuty, or webhook target
 
 ## Operator baseline
 
