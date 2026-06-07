@@ -292,9 +292,7 @@ const main = async () => {
         '--grafanaUrl',
         'http://127.0.0.1:3000',
         '--grafanaUser',
-        'admin',
-        '--grafanaPass',
-        grafanaPassword
+        'admin'
       ],
       { cwd: repoRoot, env: composeEnv }
     );
