@@ -6,7 +6,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import { body, param, query, validationResult } from 'express-validator';
+import { body, matchedData, param, query, validationResult } from 'express-validator';
 import IoTTelemetry from '../models/IoTTelemetry.js';
 import IoTDevice from '../models/IoTDevice.js';
 import Patient from '../models/Patient.js';
@@ -795,7 +795,13 @@ router.post('/simulator/session',
   authenticate,
   authorize(['admin', 'chw']),
   iotRateLimiter,
-  [body('deviceId').trim().notEmpty().withMessage('Device ID required')],
+  [
+    body('deviceId')
+      .isString().withMessage('Device ID must be a string')
+      .trim()
+      .matches(/^[A-Za-z0-9._:-]+$/).withMessage('Device ID contains invalid characters')
+      .notEmpty().withMessage('Device ID required')
+  ],
   async (req, res) => {
     try {
       const errors = validationResult(req);
@@ -806,7 +812,9 @@ router.post('/simulator/session',
         });
       }
 
-      const device = await IoTDevice.findOne({ deviceId: req.body.deviceId })
+      const { deviceId } = matchedData(req, { locations: ['body'] });
+
+      const device = await IoTDevice.findOne({ deviceId })
         .populate('assignedPatient', 'firstName lastName patientId status')
         .lean();
 
