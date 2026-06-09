@@ -14,9 +14,9 @@
     "node": "hardhat node"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "@nomicfoundation/hardhat-ethers": "^3.0.0",
-    "hardhat": "^2.19.0",
+    "@nomicfoundation/hardhat-toolbox": "^7.0.0",
+    "@nomicfoundation/hardhat-ethers": "^4.0.13",
+    "hardhat": "^3.9.0",
     "ethers": "^6.9.0"
   },
   "keywords": ["blockchain", "healthcare", "elderly-care"],
